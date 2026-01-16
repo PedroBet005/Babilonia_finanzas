@@ -40,3 +40,32 @@ babilonia_finanzas/
 ├── README.md             # Documentación
 │
 └── dist / build / respaldos
+
+
+---
+
+## 📈 Estado del proyecto
+
+🟡 En desarrollo  
+Proyecto creado como parte del aprendizaje práctico en Python y GitHub.
+
+---
+
+## 👤 Autor
+
+Pedro Nicanor Betancourt Achagua  
+Proyecto personal – Finanzas & Programación
+
+---
+
+## 📄 Licencia
+
+Uso personal y educativo.
+
+
+
+
+
+
+
+
