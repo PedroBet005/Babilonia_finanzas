@@ -1,0 +1,104 @@
+{
+    "password_hash": "b370308a25094fcd44b3c292832a7ede679ae9c8ea99dfd7ef148ac003d5b746",
+    "abierto": true,
+    "ingresos": [
+        {
+            "fecha": "2026-01-14T15:47:56.391086",
+            "monto": 28535043.0,
+            "tiene_deudas": false,
+            "distribucion": {
+                "Diezmo": 0,
+                "Mi pago": 2853504.3000000003,
+                "Gastos": 22828034.400000002,
+                "Ahorro emergencia": 142675.21500000003,
+                "Ahorro general": 142675.21500000003,
+                "Ahorro total": 285350.43000000005,
+                "Mi pago disponible": 2568153.87
+            }
+        },
+        {
+            "fecha": "2026-01-14T20:12:51.410157",
+            "monto": 28535043.0,
+            "tiene_deudas": false,
+            "distribucion": {
+                "Diezmo": 0,
+                "Mi pago": 2853504.3000000003,
+                "Gastos": 22828034.400000002,
+                "Ahorro emergencia": 142675.21500000003,
+                "Ahorro general": 142675.21500000003,
+                "Ahorro total": 285350.43000000005,
+                "Mi pago disponible": 2568153.87
+            }
+        },
+        {
+            "fecha": "2026-01-15T05:35:38.347797",
+            "monto": 28535043.0,
+            "tiene_deudas": false,
+            "distribucion": {
+                "Diezmo": 0,
+                "Mi pago": 2853504.3000000003,
+                "Gastos": 22828034.400000002,
+                "Ahorro emergencia": 142675.21500000003,
+                "Ahorro general": 142675.21500000003,
+                "Ahorro total": 285350.43000000005,
+                "Mi pago disponible": 2568153.87
+            }
+        },
+        {
+            "fecha": "2026-01-15T05:35:59.243973",
+            "monto": 28535043.0,
+            "tiene_deudas": false,
+            "distribucion": {
+                "Diezmo": 0,
+                "Mi pago": 2853504.3000000003,
+                "Gastos": 22828034.400000002,
+                "Ahorro emergencia": 142675.21500000003,
+                "Ahorro general": 142675.21500000003,
+                "Ahorro total": 285350.43000000005,
+                "Mi pago disponible": 2568153.87
+            }
+        },
+        {
+            "fecha": "2026-01-15T06:35:11.777419",
+            "monto": 28535043.0,
+            "tiene_deudas": false,
+            "distribucion": {
+                "Diezmo": 0,
+                "Mi pago": 2853504.3000000003,
+                "Gastos": 22828034.400000002,
+                "Ahorro emergencia": 142675.21500000003,
+                "Ahorro general": 142675.21500000003,
+                "Ahorro total": 285350.43000000005,
+                "Mi pago disponible": 2568153.87
+            }
+        },
+        {
+            "fecha": "2026-01-15T09:54:28.186258",
+            "monto": 28535043.0,
+            "tiene_deudas": true,
+            "distribucion": {
+                "Diezmo": 2853504.3000000003,
+                "Mi pago": 2853504.3000000003,
+                "Deudas": 2853504.3000000003,
+                "Gastos": 19974530.099999998,
+                "Ahorro emergencia": 142675.21500000003,
+                "Ahorro general": 142675.21500000003,
+                "Ahorro total": 285350.43000000005,
+                "Mi pago disponible": 2568153.87
+            }
+        }
+    ],
+    "gastos": [],
+    "historial": [],
+    "resumen": {
+        "Ingresos": 0,
+        "Gastos": 134114702.10000001,
+        "Ahorro total": 1712102.5800000005,
+        "Diezmo": 2853504.3000000003,
+        "Deudas": 2853504.3000000003,
+        "Mi pago": 17121025.8,
+        "Ahorro emergencia": 856051.2900000003,
+        "Ahorro general": 856051.2900000003,
+        "Mi pago disponible": 15408923.22
+    }
+}

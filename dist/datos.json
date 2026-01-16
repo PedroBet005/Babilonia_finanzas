@@ -1,0 +1,18 @@
+{
+    "password_hash": "",
+    "abierto": true,
+    "ingresos": [],
+    "gastos": [],
+    "historial": [],
+    "resumen": {
+        "Ingresos": 0,
+        "Gastos": 0,
+        "Ahorro total": 0,
+        "Diezmo": 0,
+        "Deudas": 0,
+        "Mi pago": 0,
+        "Ahorro emergencia": 0,
+        "Ahorro general": 0,
+        "Mi pago disponible": 0
+    }
+}

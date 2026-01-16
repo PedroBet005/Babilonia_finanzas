@@ -1,0 +1,24 @@
+{
+    "mes_actual": "2026-01",
+    "abierto": true,
+    "password_hash": "b370308a25094fcd44b3c292832a7ede679ae9c8ea99dfd7ef148ac003d5b746",
+    "ingresos": [],
+    "gastos": [],
+    "metas": [],
+    "cierres": [],
+    "historial": [],
+    "ajustes": [],
+    "ahorro": {
+        "emergencia": 0,
+        "total": 0
+    },
+    "resumen": {
+        "Diezmo": 0,
+        "Mi pago": 0,
+        "Mi pago disponible": 0,
+        "Deudas": 0,
+        "Gastos": 0,
+        "Ahorro emergencia": 0,
+        "Ahorro general": 0
+    }
+}
