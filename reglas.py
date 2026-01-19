@@ -1,4 +1,4 @@
-REGLAS = {
+RULES = {
     "max_gastos_pct": 0.6,     # 60% del ingreso
     "min_ahorro_pct": 0.1,     # 10% mínimo
     "alerta_ocio_pct": 0.2     # +20% vs mes anterior
