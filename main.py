@@ -1,7 +1,6 @@
 
-
-import seguridad as seguridad
-import calculadora
+import security as security
+import calculator as calculator
 import matplotlib.pyplot as plt
 from datetime import datetime
 import copy
@@ -9,7 +8,7 @@ import csv
 import shutil
 import os
 import json
-import reglas
+import rules
 
 
 
@@ -21,17 +20,17 @@ import reglas
 APP_DIR = os.path.join(os.environ["APPDATA"], "BabiloniaFinanzas")
 os.makedirs(APP_DIR, exist_ok=True)
 
-RUTA_DATOS = os.path.join(APP_DIR, "datos.json")
-RUTA_LOG = os.path.join(APP_DIR, "log.txt")
+DATA_PATH = os.path.join(APP_DIR, "datos.json")
+LOG_PATH = os.path.join(APP_DIR, "log.txt")
 
 
 # ==============================
 # CONFIGURACIÓN GENERAL 
 # ==============================
-MODO_PRUEBAS = False  # 🔁 Cambiar a False cuando uses datos reales
+TEST_MODE = False  # 🔁 Cambiar a False cuando uses datos reales
 
 
-CATEGORIAS_GASTOS = [
+EXPENSE_CATEGORIES = [
     "Alimentación",
     "Transporte",
     "Vivienda",
@@ -43,47 +42,51 @@ CATEGORIAS_GASTOS = [
 ]
 
 
-def guardar_datos(datos):
+def save_data(data):
+    # Guardar datos en JSON y log
     try:
-        with open(RUTA_DATOS, "w", encoding="utf-8") as f:
-            json.dump(datos, f, indent=4)
+        with open(DATA_PATH, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
 
-        with open(RUTA_LOG, "a", encoding="utf-8") as log:
+        with open(LOG_PATH, "a", encoding="utf-8") as log:
             log.write(f"GUARDADO OK - {datetime.now()}\n")
 
     except Exception as e:
-        with open(RUTA_LOG, "a", encoding="utf-8") as log:
+        with open(LOG_PATH, "a", encoding="utf-8") as log:
             log.write(f"ERROR AL GUARDAR: {e}\n")
         raise
 
 
-def cargar_datos():
-    if os.path.exists(RUTA_DATOS):
-        with open(RUTA_DATOS, "r", encoding="utf-8") as f:
+def load_data():
+    # Cargar datos desde JSON
+    if os.path.exists(DATA_PATH):
+        with open(DATA_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
     return {}
 
 
-def respaldo_datos():
+def backup_data():
+    # Crear respaldo local de datos.json
     if os.path.exists("datos.json"):
         if not os.path.exists("respaldos"):
             os.mkdir("respaldos")
 
-        fecha = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        shutil.copy("datos.json", f"respaldos/datos_{fecha}.json")
+        date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        shutil.copy("datos.json", f"respaldos/datos_{date_str}.json")
 
 
-def reiniciar_datos():
-    if not MODO_PRUEBAS:
+def reset_data():
+    # Reiniciar datos en modo pruebas
+    if not TEST_MODE:
         print("🚫 Reinicio bloqueado (Modo Producción activado).")
         return
 
-    confirmacion = input("⚠️ Esto borrará TODOS los datos. ¿Confirmar? (si/no):\n ").lower()
-    if confirmacion != "si":
+    confirmation = input("⚠️ Esto borrará TODOS los datos. ¿Confirmar? (si/no):\n ").lower()
+    if confirmation != "si":
         print("❌ Operación cancelada.")
         return
 
-    datos_iniciales = {
+    initial_data = {
         "mes_actual": datetime.now().strftime("%Y-%m"),
         "abierto": True,
         "ingresos": [],
@@ -107,22 +110,22 @@ def reiniciar_datos():
         }
     }
 
-
-    guardar_datos(datos_iniciales)
+    save_data(initial_data)
     print("🧹 Datos reiniciados correctamente (Modo Pruebas).")
 
 
-def registrar_ingreso():
-    datos = cargar_datos()
+def register_income():
+    # Registrar un ingreso nuevo
+    data = load_data()
 
-    if not datos["abierto"]:
+    if not data["abierto"]:
         print("🔒 El mes está cerrado. No se pueden registrar movimientos.")
         return
 
     # --- INGRESO ---
     try:
-        monto = float(input("Ingrese el monto del ingreso:\n "))
-        if monto <= 0:
+        amount = float(input("Ingrese el monto del ingreso:\n "))
+        if amount <= 0:
             print("❌ El monto debe ser mayor a 0")
             return
     except ValueError:
@@ -131,102 +134,108 @@ def registrar_ingreso():
 
     # --- VALIDACIÓN SI / NO (DEUDAS) ---
     while True:
-        respuesta = input("¿Tiene deudas? (si/no):\n ").strip().lower()
+        response = input("¿Tiene deudas? (si/no):\n ").strip().lower()
 
-        if respuesta in ["si", "sí"]:
-            tiene_deudas = True
+        if response in ["si", "sí"]:
+            has_debts = True
             break
-        elif respuesta == "no":
-            tiene_deudas = False
+        elif response == "no":
+            has_debts = False
             break
         else:
             print("❌ Respuesta inválida. Escriba únicamente: si o no.")
 
     # --- VALIDACIÓN SI / NO (DIEZMO) ---
     while True:
-        resp_diezmo = input("¿Desea pagar diezmo? (si/no):\n ").strip().lower()
+        tithe_resp = input("¿Desea pagar diezmo? (si/no):\n ").strip().lower()
 
-        if resp_diezmo in ["si", "sí"]:
-            paga_diezmo = True
+        if tithe_resp in ["si", "sí"]:
+            pay_tithe = True
             break
-        elif resp_diezmo == "no":
-            paga_diezmo = False
+        elif tithe_resp == "no":
+            pay_tithe = False
             break
         else:
             print("❌ Respuesta inválida. Escriba únicamente: si o no.")
 
 
     # --- DISTRIBUCIÓN BASE ---
-    distribucion = calculadora.distribuir_ingreso(
-    monto,
-    tiene_deudas,
-    paga_diezmo
+    distribution = calculator.distribuir_ingreso(
+        amount,
+        has_debts,
+        pay_tithe
     )
 
-    mi_pago = distribucion["Mi pago"]
+    my_payment = distribution["Mi pago"]
 
     # --- AHORRO AUTOMÁTICO DESDE MI PAGO ---
-    ahorro_emergencia = mi_pago * 0.05
-    ahorro_general = mi_pago * 0.05
+    emergency_saving = my_payment * 0.05
+    general_saving = my_payment * 0.05
 
-    distribucion["Ahorro emergencia"] = ahorro_emergencia
-    distribucion["Ahorro general"] = ahorro_general
-    distribucion["Mi pago disponible"] = mi_pago - (ahorro_emergencia + ahorro_general)
+    distribution["Ahorro emergencia"] = emergency_saving
+    distribution["Ahorro general"] = general_saving
+    distribution["Mi pago disponible"] = my_payment - (emergency_saving + general_saving)
 
     # --- GUARDAR INGRESO DETALLADO ---
-    datos["ingresos"].append({
+    data["ingresos"].append({
         "fecha": datetime.now().isoformat(),
-        "monto": monto,
-        "tiene_deudas": tiene_deudas,
-        "distribucion": distribucion
+        "monto": amount,
+        "tiene_deudas": has_debts,
+        "distribucion": distribution
     })
 
     # --- ACTUALIZAR RESUMEN ---
-    for clave, valor in distribucion.items():
-        if clave in datos["resumen"]:
-            datos["resumen"][clave] += valor
+    for key, value in distribution.items():
+        if key in data["resumen"]:
+            data["resumen"][key] += value
 
-
-    guardar_datos(datos)
+    save_data(data)
 
     # --- SALIDA CLARA EN CONSOLA ---
     print("\n📊 DISTRIBUCIÓN DEL INGRESO")
-    if paga_diezmo and distribucion["Diezmo"] > 0:
-        print(f"Diezmo: ${distribucion['Diezmo']:,.0f}")
+    if pay_tithe and distribution["Diezmo"] > 0:
+        print(f"Diezmo: ${distribution['Diezmo']:,.0f}")
 
+    print(f"Mi pago bruto: ${my_payment:,.0f}")
 
-    print(f"Mi pago bruto: ${mi_pago:,.0f}")
-
-    if tiene_deudas and "Deudas" in distribucion:
-        print(f"Deudas: ${distribucion['Deudas']:,.0f}")
+    if has_debts and "Deudas" in distribution:
+        print(f"Deudas: ${distribution['Deudas']:,.0f}")
 
     print("\n🏦 Ahorro automático desde Mi pago:")
-    print(f"  - Emergencia (5%): ${ahorro_emergencia:,.0f}")
-    print(f"  - Ahorro general (5%): ${ahorro_general:,.0f}")
+    print(f"  - Emergencia (5%): ${emergency_saving:,.0f}")
+    print(f"  - Ahorro general (5%): ${general_saving:,.0f}")
 
-    print(f"\n💰 Mi pago disponible: ${distribucion['Mi pago disponible']:,.0f}")
-    print(f"Gastos: ${distribucion['Gastos']:,.0f}")
+    print(f"\n💰 Mi pago disponible: ${distribution['Mi pago disponible']:,.0f}")
+    print(f"Gastos: ${distribution['Gastos']:,.0f}")
 
 
-def registrar_gasto():
 
-    datos = cargar_datos()
 
-    if not datos["abierto"]:
+
+
+
+#SE TRADUCE HASTA AQUI 1
+
+
+def register_expense():
+
+    data = load_data()
+
+    if not data["abierto"]:
         print("🔒 El mes está cerrado. No se pueden registrar movimientos.")
         return
 
     print("\n📂 Categorías de gasto:")
-    for i, categoria in enumerate(CATEGORIAS_GASTOS, start=1):
-        print(f"{i:<2} {categoria}")
+    for i, category in enumerate(EXPENSE_CATEGORIES, start=1):
+        print(f"{i:<2} {category}")
 
 
     try:
-        opcion = int(input("Seleccione una categoría:\n "))
-        if opcion < 1 or opcion > len(CATEGORIAS_GASTOS):
+        option = int(input("Seleccione una categoría:\n "))
+        if option < 1 or option > len(EXPENSE_CATEGORIES):
             print("❌ Opción inválida")
             return
-        categoria = CATEGORIAS_GASTOS[opcion - 1]
+        category = EXPENSE_CATEGORIES[option - 1]
     except ValueError:
         print("❌ Debe ingresar un número")
         return
@@ -234,60 +243,61 @@ def registrar_gasto():
 
     while True:
         try:
-            monto = float(input("Ingrese el monto del gasto:\n "))
-            if monto <= 0:
+            amount = float(input("Ingrese el monto del gasto:\n "))
+            if amount <= 0:
                 print("❌ El monto debe ser mayor a 0")
                 continue
             break
         except ValueError:
             print("❌ Ingrese un número válido")
 
-    if monto > datos["resumen"]["Gastos"]:
+    if amount > data["resumen"]["Gastos"]:
         print("🚨 No tienes presupuesto suficiente para este gasto.")
         return
 
-    datos["gastos"].append({
-        "categoria": categoria,
-        "monto": monto
+    data["gastos"].append({
+        "categoria": category,
+        "monto": amount
     })
 
-    datos["resumen"]["Gastos"] -= monto
-    guardar_datos(datos)
+    data["resumen"]["Gastos"] -= amount
+    save_data(data)
 
-    print(f"✅ Gasto registrado en '{categoria}' por ${monto:,.0f}")
+    print(f"✅ Gasto registrado en '{category}' por ${amount:,.0f}")
 
 
-def crear_meta():
-    datos = cargar_datos()
+def create_goal():
+    data = load_data()
 
-    nombre = input("Nombre de la meta: ")
-    monto_objetivo = float(input("Monto objetivo: "))
+    name = input("Nombre de la meta: ")
+    target_amount = float(input("Monto objetivo: "))
 
-    meta = {
-        "nombre": nombre,
-        "objetivo": monto_objetivo,
+    goal = {
+        "nombre": name,
+        "objetivo": target_amount,
         "ahorrado": 0
     }
 
-    datos["metas"].append(meta)
-    guardar_datos(datos)
+    data["metas"].append(goal)
+    save_data(data)
 
-    print(f"🎯 Meta '{nombre}' creada con objetivo ${monto_objetivo:,.0f}")
+    print(f"🎯 Meta '{name}' creada con objetivo ${target_amount:,.0f}")
 
-def aportar_meta():
-    datos = cargar_datos()
 
-    if not datos["metas"]:
+def contribute_goal():
+    data = load_data()
+
+    if not data["metas"]:
         print("❌ No hay metas creadas")
         return
 
     print("\n🎯 Metas:")
-    for i, meta in enumerate(datos["metas"], start=1):
-        print(f"{i}. {meta['nombre']} (${meta['ahorrado']:,.0f} / ${meta['objetivo']:,.0f})")
+    for i, goal in enumerate(data["metas"], start=1):
+        print(f"{i}. {goal['nombre']} (${goal['ahorrado']:,.0f} / ${goal['objetivo']:,.0f})")
 
     try:
-        opcion = int(input("Seleccione una meta (número):\n "))
-        if opcion < 1 or opcion > len(datos["metas"]):
+        option = int(input("Seleccione una meta (número):\n "))
+        if option < 1 or option > len(data["metas"]):
             print("❌ Opción fuera de rango")
             return
     except ValueError:
@@ -295,43 +305,43 @@ def aportar_meta():
         return
 
     try:
-        monto = float(input("Monto a aportar: "))
-        if monto <= 0:
+        amount = float(input("Monto a aportar: "))
+        if amount <= 0:
             print("❌ El monto debe ser mayor a 0")
             return
     except ValueError:
         print("❌ Monto inválido")
         return
 
-    if monto > datos["ahorro"]["total"]:
+    if amount > data["ahorro"]["total"]:
         print("🚨 No tienes ahorro suficiente")
         return
 
-    indice = opcion - 1
-    datos["ahorro"]["total"] -= monto
-    datos["metas"][indice]["ahorrado"] += monto
+    index = option - 1
+    data["ahorro"]["total"] -= amount
+    data["metas"][index]["ahorrado"] += amount
 
-    guardar_datos(datos)
+    save_data(data)
     print("✅ Aporte realizado correctamente")
 
 
-def grafica_gastos():
-    datos = cargar_datos()
+def expense_chart():
+    data = load_data()
 
-    if not datos["gastos"]:
+    if not data["gastos"]:
         print("❌ No hay gastos registrados")
         return
 
-    categorias = {}
-    for gasto in datos["gastos"]:
-        cat = gasto["categoria"]
-        categorias[cat] = categorias.get(cat, 0) + gasto["monto"]
+    categories = {}
+    for expense in data["gastos"]:
+        cat = expense["categoria"]
+        categories[cat] = categories.get(cat, 0) + expense["monto"]
 
-    nombres = list(categorias.keys())
-    valores = list(categorias.values())
+    names = list(categories.keys())
+    values = list(categories.values())
 
     plt.figure()
-    plt.bar(nombres, valores)
+    plt.bar(names, values)
     plt.title("Gastos por categoría")
     plt.xlabel("Categoría")
     plt.ylabel("Monto")
@@ -339,21 +349,22 @@ def grafica_gastos():
     plt.tight_layout()
     plt.show()
 
-def grafica_metas():
-    datos = cargar_datos()
 
-    if not datos["metas"]:
+def goals_chart():
+    data = load_data()
+
+    if not data["metas"]:
         print("❌ No hay metas registradas")
         return
 
-    nombres = [meta["nombre"] for meta in datos["metas"]]
-    porcentajes = [
-        (meta["ahorrado"] / meta["objetivo"]) * 100
-        for meta in datos["metas"]
+    names = [goal["nombre"] for goal in data["metas"]]
+    percentages = [
+        (goal["ahorrado"] / goal["objetivo"]) * 100
+        for goal in data["metas"]
     ]
 
     plt.figure()
-    plt.bar(nombres, porcentajes)
+    plt.bar(names, percentages)
     plt.title("Progreso de metas (%)")
     plt.ylabel("Porcentaje completado")
     plt.ylim(0, 100)
@@ -361,38 +372,39 @@ def grafica_metas():
     plt.tight_layout()
     plt.show()
 
-def reporte_financiero():
-    datos = cargar_datos()
+
+def financial_report():
+    data = load_data()
 
     print("\n📊 REPORTE FINANCIERO GENERAL")
 
-    total_ingresos = sum(i["monto"] for i in datos["ingresos"])
-    total_gastos = sum(g["monto"] for g in datos["gastos"])
+    total_income = sum(i["monto"] for i in data["ingresos"])
+    total_expenses = sum(e["monto"] for e in data["gastos"])
 
-    print(f"Ingresos totales: ${total_ingresos:,.0f}")
-    print(f"Gastos totales:   ${total_gastos:,.0f}")
+    print(f"Ingresos totales: ${total_income:,.0f}")
+    print(f"Gastos totales:   ${total_expenses:,.0f}")
 
-    balance = total_ingresos - total_gastos
+    balance = total_income - total_expenses
     print(f"Balance:          ${balance:,.0f}")
 
     print("\n🏦 AHORROS")
-    print(f"Ahorro emergencia: ${datos['resumen']['Ahorro emergencia']:,.0f}")
-    print(f"Ahorro general: ${datos['resumen']['Ahorro general']:,.0f}")
-    print(f"Ahorro total: ${datos['resumen']['Ahorro total']:,.0f}")
+    print(f"Ahorro emergencia: ${data['resumen']['Ahorro emergencia']:,.0f}")
+    print(f"Ahorro general: ${data['resumen']['Ahorro general']:,.0f}")
+    print(f"Ahorro total: ${data['resumen']['Ahorro total']:,.0f}")
 
 
-def verificar_cierre_mes(datos):
-    mes_actual = datetime.now().strftime("%Y-%m")
+def check_month_close(data):
+    current_month = datetime.now().strftime("%Y-%m")
 
     # Inicializaciones seguras
-    if "mes_actual" not in datos:
-        datos["mes_actual"] = mes_actual
+    if "mes_actual" not in data:
+        data["mes_actual"] = current_month
 
-    if "historial" not in datos:
-        datos["historial"] = []
+    if "historial" not in data:
+        data["historial"] = []
 
-    if "resumen" not in datos:
-        datos["resumen"] = {
+    if "resumen" not in data:
+        data["resumen"] = {
             "Diezmo": 0,
             "Mi pago": 0,
             "Deudas": 0,
@@ -402,18 +414,18 @@ def verificar_cierre_mes(datos):
             "Mi pago disponible": 0
         }
 
-    mes_guardado = datos["mes_actual"]
+    saved_month = data["mes_actual"]
 
     # Si cambió el mes → cerrar mes anterior
-    if mes_guardado != mes_actual:
-        datos["historial"].append({
-            "mes": mes_guardado,
-            "resumen": copy.deepcopy(datos["resumen"])
+    if saved_month != current_month:
+        data["historial"].append({
+            "mes": saved_month,
+            "resumen": copy.deepcopy(data["resumen"])
         })
 
         # Reiniciar mes
-        datos["mes_actual"] = mes_actual
-        datos["resumen"] = {
+        data["mes_actual"] = current_month
+        data["resumen"] = {
             "Diezmo": 0,
             "Mi pago": 0,
             "Deudas": 0,
@@ -423,63 +435,62 @@ def verificar_cierre_mes(datos):
             "Mi pago disponible": 0
         }
 
-        datos["ingresos"] = []
-        datos["gastos"] = []
+        data["ingresos"] = []
+        data["gastos"] = []
 
-        guardar_datos(datos)
+        save_data(data)
 
         print("📦 Mes cerrado automáticamente.")
 
 
+def register_adjustment():
+    data = load_data()
 
-def registrar_ajuste():
-    datos = cargar_datos()
-
-    if not datos["abierto"]:
+    if not data["abierto"]:
         print("🔒 No se pueden hacer ajustes en meses cerrados.")
         return
 
-    descripcion = input("Descripción del ajuste:\n ")
-    monto = float(input("Monto del ajuste (+ o -): "))
+    description = input("Descripción del ajuste:\n ")
+    amount = float(input("Monto del ajuste (+ o -): "))
 
-    datos["ajustes"].append({
+    data["ajustes"].append({
         "fecha": datetime.now().isoformat(),
-        "descripcion": descripcion,
-        "monto": monto
+        "descripcion": description,
+        "monto": amount
     })
 
-    datos["resumen"]["Gastos"] += monto
-    guardar_datos(datos)
+    data["resumen"]["Gastos"] += amount
+    save_data(data)
 
     print("✏️ Ajuste registrado (queda en historial).")
 
-def ver_historial():
-    datos = cargar_datos()
+
+def view_history():
+    data = load_data()
 
     print("\n📚 HISTORIAL FINANCIERO")
-    for mes in datos["historial"]:
-        print(f"\n🗓️ Mes: {mes['mes']}")
-        for k, v in mes["resumen"].items():
-            print(f"{k}: ${v:,.0f}")
+    for month in data["historial"]:
+        print(f"\n🗓️ Mes: {month['mes']}")
+        for key, value in month["resumen"].items():
+            print(f"{key}: ${value:,.0f}")
 
 
-def obtener_historial():
-    datos = cargar_datos()
-    return datos.get("historial", [])
+def get_history():
+    data = load_data()
+    return data.get("historial", [])
 
 
-
-def registrar_ingreso_desde_ui(monto, tiene_deudas, paga_diezmo):
-    datos = cargar_datos()
+def register_income_from_ui(amount, has_debts, pay_tithe):
+    data = load_data()
 
     # === Inicialización segura de estructura ===
-    datos.setdefault("abierto", True)
-    datos.setdefault("ingresos", [])
-    datos.setdefault("gastos", [])
-    datos.setdefault("historial", [])
-    datos.setdefault("resumen", {})
+    data.setdefault("abierto", True)
+    data.setdefault("ingresos", [])
+    data.setdefault("gastos", [])
+    data.setdefault("historial", [])
+    data.setdefault("resumen", {})
 
-    for clave in [
+    for key in [
         "Ingresos",
         "Gastos",
         "Ahorro total",
@@ -490,144 +501,148 @@ def registrar_ingreso_desde_ui(monto, tiene_deudas, paga_diezmo):
         "Ahorro general",
         "Mi pago disponible"
     ]:
-        datos["resumen"].setdefault(clave, 0)
+        data["resumen"].setdefault(key, 0)
 
     # Si no está abierto, no hacer nada
-    if not datos.get("abierto", True):
+    if not data.get("abierto", True):
         return None
 
-    ingreso = float(monto)
+    income = float(amount)
 
     # ─── Distribución base desde calculadora ───
-    distribucion = calculadora.distribuir_ingreso(
-        ingreso,
-        tiene_deudas,
-        paga_diezmo
+    distribution = calculator.distribuir_ingreso(
+        income,
+        has_debts,
+        pay_tithe
     )
 
     # ─── Mi pago (10% fijo) ───
-    mi_pago = distribucion["Mi pago"]
+    my_payment = distribution["Mi pago"]
 
     # ─── Ahorros automáticos (salen SOLO de mi pago) ───
-    ahorro_emergencia = mi_pago * 0.05
-    ahorro_general = mi_pago * 0.05
-    ahorro_total = ahorro_emergencia + ahorro_general
+    emergency_saving = my_payment * 0.05
+    general_saving = my_payment * 0.05
+    total_saving = emergency_saving + general_saving
 
-    distribucion["Ahorro emergencia"] = ahorro_emergencia
-    distribucion["Ahorro general"] = ahorro_general
-    distribucion["Ahorro total"] = ahorro_total
-    distribucion["Mi pago disponible"] = mi_pago - ahorro_total
+    distribution["Ahorro emergencia"] = emergency_saving
+    distribution["Ahorro general"] = general_saving
+    distribution["Ahorro total"] = total_saving
+    distribution["Mi pago disponible"] = my_payment - total_saving
 
     # ─── ✅ CORRECCIÓN CLAVE: GASTOS CORRECTOS ───
-    diezmo = distribucion.get("Diezmo", 0)
-    deudas = distribucion.get("Deudas", 0)
+    tithe = distribution.get("Diezmo", 0)
+    debts = distribution.get("Deudas", 0)
 
-    gastos = ingreso - diezmo - deudas - mi_pago
-    distribucion["Gastos"] = gastos
+    expenses = income - tithe - debts - my_payment
+    distribution["Gastos"] = expenses
 
     # ─── Guardar ingreso ───
-    datos["ingresos"].append({
+    data["ingresos"].append({
         "fecha": datetime.now().isoformat(),
-        "monto": ingreso,
-        "tiene_deudas": tiene_deudas,
-        "distribucion": distribucion
+        "monto": income,
+        "tiene_deudas": has_debts,
+        "distribucion": distribution
     })
 
     # ─── Actualizar resumen ───
-    datos["resumen"]["Ingresos"] += ingreso
-    datos["resumen"]["Diezmo"] += diezmo
-    datos["resumen"]["Deudas"] += deudas
-    datos["resumen"]["Gastos"] += gastos
-    datos["resumen"]["Mi pago"] += mi_pago
-    datos["resumen"]["Ahorro emergencia"] += ahorro_emergencia
-    datos["resumen"]["Ahorro general"] += ahorro_general
+    data["resumen"]["Ingresos"] += income
+    data["resumen"]["Diezmo"] += tithe
+    data["resumen"]["Deudas"] += debts
+    data["resumen"]["Gastos"] += expenses
+    data["resumen"]["Mi pago"] += my_payment
+    data["resumen"]["Ahorro emergencia"] += emergency_saving
+    data["resumen"]["Ahorro general"] += general_saving
 
-    datos["resumen"]["Ahorro total"] = (
-        datos["resumen"]["Ahorro emergencia"] +
-        datos["resumen"]["Ahorro general"]
+    data["resumen"]["Ahorro total"] = (
+        data["resumen"]["Ahorro emergencia"] +
+        data["resumen"]["Ahorro general"]
     )
 
-    datos["resumen"]["Mi pago disponible"] = (
-        datos["resumen"]["Mi pago"] -
-        datos["resumen"]["Ahorro total"]
+    data["resumen"]["Mi pago disponible"] = (
+        data["resumen"]["Mi pago"] -
+        data["resumen"]["Ahorro total"]
     )
 
-    guardar_datos(datos)
-    return distribucion
+    save_data(data)
+    return distribution
 
 
+def register_expense_from_ui(amount, category):
+    data = load_data()
 
-def registrar_gasto_desde_ui(monto, categoria):
-    datos = cargar_datos()
-
-    if datos["resumen"]["Gastos"] < monto:
+    if data["resumen"]["Gastos"] < amount:
         return False
 
-    datos["gastos"].append({
-        "monto": monto,
-        "categoria": categoria
+    data["gastos"].append({
+        "monto": amount,
+        "categoria": category
     })
 
-    datos["resumen"]["Gastos"] -= monto
+    data["resumen"]["Gastos"] -= amount
 
-    guardar_datos(datos)
+    save_data(data)
     return True
 
 
-def obtener_reporte_mensual():
-    datos = cargar_datos()
-    resumen = datos.get("resumen", {})
 
-    reporte = {
-        "Diezmo": resumen.get("Diezmo", 0),
-        "Deudas": resumen.get("Deudas", 0),
-        "Gastos": resumen.get("Gastos", 0),
-        "Mi pago": resumen.get("Mi pago", 0),
-        "Ahorro emergencia": resumen.get("Ahorro emergencia", 0),
-        "Ahorro general": resumen.get("Ahorro general", 0),
-        "Ahorro total": resumen.get("Ahorro total", 0),
-        "Mi pago disponible": resumen.get("Mi pago disponible", 0),
+
+
+#SE TRADUCE HASTA AQUI 2
+
+def get_monthly_report():
+    data = load_data()
+    summary = data.get("resumen", {})
+
+    report = {
+        "Diezmo": summary.get("Diezmo", 0),
+        "Deudas": summary.get("Deudas", 0),
+        "Gastos": summary.get("Gastos", 0),
+        "Mi pago": summary.get("Mi pago", 0),
+        "Ahorro emergencia": summary.get("Ahorro emergencia", 0),
+        "Ahorro general": summary.get("Ahorro general", 0),
+        "Ahorro total": summary.get("Ahorro total", 0),
+        "Mi pago disponible": summary.get("Mi pago disponible", 0),
     }
 
-    return reporte
-
-def obtener_historial():
-    datos = cargar_datos()
-    return datos.get("historial", [])
+    return report
 
 
+def get_history():
+    data = load_data()
+    return data.get("historial", [])
 
-def grafica_comparacion_mensual():
-    historial = obtener_historial()
 
-    if len(historial) < 1:
+def monthly_comparison_chart():
+    history = get_history()
+
+    if len(history) < 1:
         print("❌ No hay meses suficientes para comparar.")
         return False
 
-    meses = []
-    ingresos = []
-    gastos = []
-    ahorros = []
+    months = []
+    incomes = []
+    expenses = []
+    savings = []
 
-    for mes in historial:
-        resumen = mes["resumen"]
+    for month in history:
+        summary = month["resumen"]
 
-        meses.append(mes["mes"])
-        ingresos.append(
-            resumen.get("Mi pago", 0) +
-            resumen.get("Diezmo", 0) +
-            resumen.get("Deudas", 0)
+        months.append(month["mes"])
+        incomes.append(
+            summary.get("Mi pago", 0) +
+            summary.get("Diezmo", 0) +
+            summary.get("Deudas", 0)
         )
-        gastos.append(resumen.get("Gastos", 0))
-        ahorros.append(
-            resumen.get("Ahorro emergencia", 0) +
-            resumen.get("Ahorro general", 0)
+        expenses.append(summary.get("Gastos", 0))
+        savings.append(
+            summary.get("Ahorro emergencia", 0) +
+            summary.get("Ahorro general", 0)
         )
 
     plt.figure()
-    plt.plot(meses, ingresos, label="Ingresos")
-    plt.plot(meses, gastos, label="Gastos")
-    plt.plot(meses, ahorros, label="Ahorro")
+    plt.plot(months, incomes, label="Ingresos")
+    plt.plot(months, expenses, label="Gastos")
+    plt.plot(months, savings, label="Ahorro")
 
     plt.title("Comparación mensual")
     plt.xlabel("Mes")
@@ -640,79 +655,78 @@ def grafica_comparacion_mensual():
     return True
 
 
-def comparar_meses(mes1, mes2):
-    historial = obtener_historial()
+def compare_months(month1, month2):
+    history = get_history()
 
-    m1 = next((m for m in historial if m["mes"] == mes1), None)
-    m2 = next((m for m in historial if m["mes"] == mes2), None)
+    m1 = next((m for m in history if m["mes"] == month1), None)
+    m2 = next((m for m in history if m["mes"] == month2), None)
 
     if not m1 or not m2:
         return None
 
-    comparacion = {}
+    comparison = {}
 
-    for clave in m1["resumen"]:
-        comparacion[clave] = m2["resumen"].get(clave, 0) - m1["resumen"].get(clave, 0)
+    for key in m1["resumen"]:
+        comparison[key] = m2["resumen"].get(key, 0) - m1["resumen"].get(key, 0)
 
-    return comparacion
+    return comparison
 
 
-def obtener_estado_mes():
-    datos = cargar_datos()
-    return datos.get("abierto", True)
+def get_month_status():
+    data = load_data()
+    return data.get("abierto", True)
 
-def exportar_historial_csv(ruta="historial_financiero.csv"):
-    datos = cargar_datos()
-    historial = datos.get("historial", [])
 
-    if not historial:
+def export_history_csv(path="financial_history.csv"):
+    data = load_data()
+    history = data.get("historial", [])
+
+    if not history:
         return False
 
-    with open(ruta, mode="w", newline="", encoding="utf-8") as f:
+    with open(path, mode="w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["Mes", "Concepto", "Monto"])
 
-        for mes in historial:
-            for k, v in mes["resumen"].items():
-                writer.writerow([mes["mes"], k, v])
+        for month in history:
+            for key, value in month["resumen"].items():
+                writer.writerow([month["mes"], key, value])
 
     return True
 
 
-def analisis_financiero():
-    datos = cargar_datos()
-    historial = datos.get("historial", [])
+def financial_analysis():
+    data = load_data()
+    history = data.get("historial", [])
 
-    if len(historial) < 2:
+    if len(history) < 2:
         return "No hay suficientes datos para análisis."
 
-    actual = historial[-1]["resumen"]
-    anterior = historial[-2]["resumen"]
+    current = history[-1]["resumen"]
+    previous = history[-2]["resumen"]
 
-    mensajes = []
+    messages = []
 
-    if actual.get("Gastos", 0) > anterior.get("Gastos", 0):
-        mensajes.append("⚠️ Gastaste más que el mes anterior.")
+    if current.get("Gastos", 0) > previous.get("Gastos", 0):
+        messages.append("⚠️ Gastaste más que el mes anterior.")
 
-    if actual.get("Ahorro total", 0) < anterior.get("Ahorro total", 0):
-        mensajes.append("⚠️ Tu ahorro disminuyó.")
+    if current.get("Ahorro total", 0) < previous.get("Ahorro total", 0):
+        messages.append("⚠️ Tu ahorro disminuyó.")
 
-    if not mensajes:
-        mensajes.append("✅ Buen trabajo, tus finanzas van mejorando.")
+    if not messages:
+        messages.append("✅ Buen trabajo, tus finanzas van mejorando.")
 
-    return "\n".join(mensajes)
+    return "\n".join(messages)
 
 
-
-def menu():
-    datos = cargar_datos()
-    verificar_cierre_mes(datos)
+def main_menu():
+    data = load_data()
+    check_month_close(data)
 
     while True:
 
-        modo = "🧪 PRUEBAS" if MODO_PRUEBAS else "🔒 PRODUCCIÓN"
-        print(f"\n🏛️ FINANZAS DE BABILONIA — {modo}")
-
+        mode = "🧪 PRUEBAS" if TEST_MODE else "🔒 PRODUCCIÓN"
+        print(f"\n🏛️ FINANZAS DE BABILONIA — {mode}")
 
         print("\n🏛️ FINANZAS DE BABILONIA")
         print("1. Registrar ingreso")
@@ -725,70 +739,72 @@ def menu():
         print("8. Reiniciar datos")
         print("9. Salir")
 
-        opcion = input("Seleccione una opción:\n ")
+        option = input("Seleccione una opción:\n ")
 
-        if opcion == "1":
-            registrar_ingreso()
+        if option == "1":
+            register_income()
 
-        elif opcion == "2":
-            registrar_gasto()
+        elif option == "2":
+            register_expense()
 
-        elif opcion == "3":
-            crear_meta()
+        elif option == "3":
+            create_goal()
 
-        elif opcion == "4":
-            aportar_meta()
+        elif option == "4":
+            contribute_goal()
 
-        elif opcion == "5":
-            reporte_financiero()
+        elif option == "5":
+            financial_report()
 
-        elif opcion == "6":
-            grafica_gastos()
+        elif option == "6":
+            expense_chart()
 
-        elif opcion == "7":
-            grafica_metas()
+        elif option == "7":
+            goals_chart()
 
-        elif opcion == "8":
-            reiniciar_datos()
+        elif option == "8":
+            reset_data()
 
-        elif opcion == "9":
+        elif option == "9":
             print("👋 Hasta pronto. Protege tu oro.")
             break
 
         else:
             print("❌ Opción inválida")
 
-def obtener_historial_para_grafica():
-    datos = cargar_datos()
-    return datos.get("historial", [])
 
-def analizar_alertas():
-    datos = cargar_datos()
-    alertas = []
+def get_history_for_chart():
+    data = load_data()
+    return data.get("historial", [])
 
-    resumen = datos.get("resumen", {})
-    ingreso = resumen.get("Mi pago", 0)
-    gastos = resumen.get("Gastos", 0)
-    ahorro_total = resumen.get("Ahorro total", 0)
 
-    if ingreso > 0:
-        if gastos > ingreso * reglas.REGLAS["max_gastos_pct"]:
-            alertas.append("⚠️ Gastos superan el 60% del ingreso")
+def analyze_alerts():
+    data = load_data()
+    alerts = []
 
-        if ahorro_total < ingreso * reglas.REGLAS["min_ahorro_pct"]:
-            alertas.append("⚠️ Ahorro menor al 10% del ingreso")
+    summary = data.get("resumen", {})
+    income = summary.get("Mi pago", 0)
+    expenses = summary.get("Gastos", 0)
+    total_saving = summary.get("Ahorro total", 0)
+
+    if income > 0:
+        if expenses > income * rules.RULES["max_expense_pct"]:
+            alerts.append("⚠️ Gastos superan el 60% del ingreso")
+
+        if total_saving < income * rules.RULES["min_saving_pct"]:
+            alerts.append("⚠️ Ahorro menor al 10% del ingreso")
 
     # Comparación ocio
-    historial = datos.get("historial", [])
-    if len(historial) >= 1:
-        mes_ant = historial[-1]["resumen"]
-        ocio_ant = mes_ant.get("Ocio", 0)
-        ocio_act = 0  # si luego separas por categoría
-        if ocio_ant > 0 and ocio_act > ocio_ant * (1 + reglas.REGLAS["alerta_ocio_pct"]):
-            alertas.append("⚠️ Ocio aumentó más del 20%")
+    history = data.get("historial", [])
+    if len(history) >= 1:
+        prev_month = history[-1]["resumen"]
+        prev_leisure = prev_month.get("Ocio", 0)
+        current_leisure = 0  # si luego separas por categoría
+        if prev_leisure > 0 and current_leisure > prev_leisure * (1 + rules.RULES["alerta_ocio_pct"]):
+            alerts.append("⚠️ Ocio aumentó más del 20%")
 
-    return alertas
+    return alerts
 
-            
+
 if __name__ == "__main__":
-    menu()
+    main_menu()

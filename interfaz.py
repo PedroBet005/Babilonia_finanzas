@@ -4,7 +4,7 @@ from tkinter import messagebox
 import main
 from tkinter import ttk
 import matplotlib.pyplot as plt
-from reglas import CATEGORIAS_GASTOS
+from rules import EXPENSE_CATEGORIES
 import hashlib
 import os
 
@@ -12,317 +12,273 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(BASE_DIR)
 
 
-
-def generar_hash(password):
+# ==============================
+# HASH DE CONTRASEÑA
+# ==============================
+def generate_hash(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
 
-def tiene_password():
-    datos = main.cargar_datos()
-    return "password_hash" in datos
+def has_password():
+    data = main.cargar_datos()
+    return "password_hash" in data
 
-def crear_password():
-    ventana = tk.Tk()
-    ventana.title("Crear contraseña - Babilonia Finanzas")
-    ventana.geometry("300x150")
 
-    tk.Label(ventana, text="Crea tu contraseña").pack(pady=5)
-    entrada = tk.Entry(ventana, show="*")
-    entrada.pack(pady=5)
+def create_password():
+    pw_window = tk.Tk()
+    pw_window.title("Crear contraseña - Babilonia Finanzas")
+    pw_window.geometry("300x150")
 
-    def guardar():
-        password = entrada.get()
+    tk.Label(pw_window, text="Crea tu contraseña").pack(pady=5)
+    pw_entry = tk.Entry(pw_window, show="*")
+    pw_entry.pack(pady=5)
+
+    def save_pw():
+        password = pw_entry.get()
         if password == "":
             messagebox.showerror("Error", "La contraseña no puede estar vacía")
             return
 
-        datos = main.cargar_datos()  # ← NO crear dict nuevo
-        datos["password_hash"] = generar_hash(password)
-        main.guardar_datos(datos)
-
+        data = main.cargar_datos()  # ← NO crear dict nuevo
+        data["password_hash"] = generate_hash(password)
+        main.guardar_datos(data)
 
         messagebox.showinfo("Éxito", "Contraseña creada correctamente")
-        ventana.destroy()
-        iniciar_app()
+        pw_window.destroy()
+        start_app()
 
-    tk.Button(ventana, text="Guardar", command=guardar).pack(pady=10)
-    ventana.mainloop()
+    tk.Button(pw_window, text="Guardar", command=save_pw).pack(pady=10)
+    pw_window.mainloop()
 
 
 def login():
-    ventana = tk.Tk()
-    ventana.title("Acceso - Babilonia Finanzas")
-    ventana.geometry("300x150")
+    login_window = tk.Tk()
+    login_window.title("Acceso - Babilonia Finanzas")
+    login_window.geometry("300x150")
 
-    tk.Label(ventana, text="Ingresa tu contraseña").pack(pady=5)
-    entrada = tk.Entry(ventana, show="*")
-    entrada.pack(pady=5)
+    tk.Label(login_window, text="Ingresa tu contraseña").pack(pady=5)
+    pw_entry = tk.Entry(login_window, show="*")
+    pw_entry.pack(pady=5)
 
-    def validar():
-        password = entrada.get()
-        datos = main.cargar_datos()
+    def validate_pw():
+        password = pw_entry.get()
+        data = main.cargar_datos()
 
-        if generar_hash(password) == datos["password_hash"]:
-            ventana.destroy()
-            iniciar_app()
+        if generate_hash(password) == data["password_hash"]:
+            login_window.destroy()
+            start_app()
         else:
             messagebox.showerror("Error", "Contraseña incorrecta")
 
-    tk.Button(ventana, text="Entrar", command=validar).pack(pady=10)
-    ventana.mainloop()
+    tk.Button(login_window, text="Entrar", command=validate_pw).pack(pady=10)
+    login_window.mainloop()
 
 
-
-
-COLOR_FONDO = "#f4f6f7"
-COLOR_PRIMARIO = "#2c3e50"
-COLOR_BOTON = "#34495e"
-COLOR_BOTON_SEC = "#5dade2"
-COLOR_SALIR = "#c0392b"
-COLOR_TEXTO = "white"
-
+# ==============================
+# COLORES
+# ==============================
+BG_COLOR = "#f4f6f7"
+PRIMARY_COLOR = "#2c3e50"
+BUTTON_COLOR = "#34495e"
+SECONDARY_BUTTON_COLOR = "#5dade2"
+EXIT_COLOR = "#c0392b"
+TEXT_COLOR = "white"
 
 
 # ==============================
 # CONFIGURACIÓN DE LA VENTANA
 # ==============================
-
-
-def iniciar_app():  
-    global ventana
-    ventana = tk.Tk()
-    ventana.title("🏛️ Finanzas de Babilonia")
-    ventana.geometry("400x500")
-    ventana.resizable(False, False)
-    ventana.configure(bg=COLOR_FONDO)
-
+def start_app():
+    global app_window
+    app_window = tk.Tk()
+    app_window.title("🏛️ Finanzas de Babilonia")
+    app_window.geometry("400x500")
+    app_window.resizable(False, False)
+    app_window.configure(bg=BG_COLOR)
 
     # --- TÍTULO ---
-    titulo = tk.Label(
-        ventana,
+    title_label = tk.Label(
+        app_window,
         text="FINANZAS DE BABILONIA",
         font=("Arial", 16, "bold"),
-        bg=COLOR_FONDO,
-        fg=COLOR_PRIMARIO
+        bg=BG_COLOR,
+        fg=PRIMARY_COLOR
     )
-    titulo.pack(pady=20)
-
+    title_label.pack(pady=20)
 
     # --- TEXTO INFORMATIVO ---
-    descripcion = tk.Label(
-        ventana,
+    description_label = tk.Label(
+        app_window,
         text="Aplicación de finanzas personales\nbasada en principios de Babilonia",
         font=("Arial", 10),
         justify="center",
-        bg=COLOR_FONDO,
-        fg=COLOR_PRIMARIO
+        bg=BG_COLOR,
+        fg=PRIMARY_COLOR
     )
-    descripcion.pack(pady=10)
+    description_label.pack(pady=10)
 
-
-
-
-        # --- FRAME PRINCIPAL (botones visibles) ---
-    frame_principal = tk.Frame(ventana)
-    frame_principal.pack(pady=10)
-
-
+    # --- FRAME PRINCIPAL (botones visibles) ---
+    main_frame = tk.Frame(app_window)
+    main_frame.pack(pady=10)
 
     # --- BOTONES (CON FUNCIÓN) ---
-
-    boton_estilizado(
-        frame_principal,
-        "Registrar ingreso",
-        ventana_ingreso
-    ).pack(pady=8)
-
-    boton_estilizado(
-        frame_principal, 
-        "Registrar gasto", 
-        ventana_gasto
-    ).pack(pady=8)
-
-    boton_estilizado(
-        frame_principal, 
-        "Ver reporte", 
-        ventana_reporte
-    ).pack(pady=8)
-
-    boton_estilizado(
-        frame_principal,
+    styled_button(main_frame, "Registrar ingreso", income_window).pack(pady=8)
+    styled_button(main_frame, "Registrar gasto", expense_window).pack(pady=8)
+    styled_button(main_frame, "Ver reporte", report_window).pack(pady=8)
+    styled_button(
+        main_frame,
         "📊 Herramientas financieras",
-        ventana_herramientas,
-        COLOR_BOTON_SEC
+        tools_window,
+        SECONDARY_BUTTON_COLOR
     ).pack(pady=10)
+    styled_button(app_window, "Salir", app_window.quit, EXIT_COLOR).pack(pady=30)
 
-    boton_estilizado(
-        ventana,
-        "Salir",
-        ventana.quit,
-        COLOR_SALIR
-    ).pack(pady=30)
+    app_window.mainloop()
 
 
-
-    ventana.mainloop()
-
-
-def boton_estilizado(parent, texto, comando, color=COLOR_BOTON):
+def styled_button(parent, text, command, color=BUTTON_COLOR):
     return tk.Button(
         parent,
-        text=texto,
+        text=text,
         width=25,
         bg=color,
-        fg=COLOR_TEXTO,
+        fg=TEXT_COLOR,
         activebackground="#1f618d",
         relief="flat",
-        command=comando
+        command=command
     )
 
 
-def ventana_herramientas():
-
-    global herramientas
-
-    herramientas = tk.Toplevel()
-    herramientas.configure(bg=COLOR_FONDO)
-    herramientas.transient(ventana)      # pertenece a la ventana principal
-    herramientas.grab_set()       # bloquea la ventana principal
-    herramientas.title("📊 Herramientas financieras")
-    herramientas.geometry("380x450")
-    herramientas.resizable(False, False)
+def tools_window():
+    global tools_win
+    tools_win = tk.Toplevel()
+    tools_win.configure(bg=BG_COLOR)
+    tools_win.transient(app_window)      # pertenece a la ventana principal
+    tools_win.grab_set()                 # bloquea la ventana principal
+    tools_win.title("📊 Herramientas financieras")
+    tools_win.geometry("380x450")
+    tools_win.resizable(False, False)
 
     tk.Label(
-        herramientas,
+        tools_win,
         text="Herramientas financieras",
         font=("Arial", 14, "bold"),
-        bg=COLOR_FONDO,
-        fg=COLOR_PRIMARIO
+        bg=BG_COLOR,
+        fg=PRIMARY_COLOR
     ).pack(pady=15)
 
-
     tk.Button(
-        herramientas,
-        text="Ver historial mensual",
-        width=30,
-        command=ventana_historial
+        tools_win, 
+        text="Ver historial mensual", 
+        width=30, 
+        command=history_window
     ).pack(pady=8)
 
     tk.Button(
-        herramientas,
-        text="Comparar meses",
-        width=30,
-        command=ventana_comparacion
+        tools_win, 
+        text="Comparar meses", 
+        width=30, 
+        command=comparison_window
     ).pack(pady=8)
 
     tk.Button(
-        herramientas,
-        text="Ver alertas",
-        width=30,
-        command=ventana_alertas
+        tools_win, 
+        text="Ver alertas", 
+        width=30, 
+        command=alerts_window
     ).pack(pady=8)
 
     tk.Button(
-        herramientas,
-        text="📈 Ver gráfica mensual",
-        width=30,
-        command=ventana_grafica_mensual
+        tools_win, 
+        text="📈 Ver gráfica mensual", 
+        width=30, 
+        command=monthly_chart_window
     ).pack(pady=8)
 
     tk.Button(
-        herramientas,
-        text="💾 Exportar historial CSV",
-        width=30,
-        command=exportar_csv
+        tools_win, 
+        text="💾 Exportar historial CSV", 
+        width=30, 
+        command=export_csv
     ).pack(pady=8)
 
     tk.Button(
-        herramientas,
-        text="🧠 Análisis financiero",
-        width=30,
-        command=ventana_analisis
+        tools_win, 
+        text="🧠 Análisis financiero", 
+        width=30, 
+        command=analysis_window
     ).pack(pady=8)
-
     tk.Button(
-        herramientas,
-        text="Cerrar",
-        width=30,
-        command=herramientas.destroy
+        tools_win, 
+        text="Cerrar", 
+        width=30, command=tools_win.destroy
     ).pack(pady=20)
 
 
 
-
-def ventana_ingreso():
+def income_window():
+    # Ventana para registrar ingresos
     win = tk.Toplevel()
     win.title("Registrar ingreso")
 
     tk.Label(win, text="Monto del ingreso").pack(pady=5)
-    entry_monto = tk.Entry(win)
-    entry_monto.pack(pady=5)
+    entry_amount = tk.Entry(win)
+    entry_amount.pack(pady=5)
 
     tk.Label(win, text="¿Tiene deudas?").pack(pady=5)
-    var_deudas = tk.StringVar(value="no")
+    debt_var = tk.StringVar(value="no")
 
-    tk.Radiobutton(win, text="Sí", variable=var_deudas, value="si").pack()
-    tk.Radiobutton(win, text="No", variable=var_deudas, value="no").pack()
-
+    tk.Radiobutton(win, text="Sí", variable=debt_var, value="si").pack()
+    tk.Radiobutton(win, text="No", variable=debt_var, value="no").pack()
 
     tk.Label(win, text="¿Desea pagar diezmo?").pack(pady=5)
-    var_diezmo = tk.StringVar(value="no")
+    tithe_var = tk.StringVar(value="no")
 
-    tk.Radiobutton(win, text="Sí", variable=var_diezmo, value="si").pack()
-    tk.Radiobutton(win, text="No", variable=var_diezmo, value="no").pack()
+    tk.Radiobutton(win, text="Sí", variable=tithe_var, value="si").pack()
+    tk.Radiobutton(win, text="No", variable=tithe_var, value="no").pack()
 
+    result_frame = tk.Frame(win)
+    result_frame.pack(pady=10)
 
-    resultado_frame = tk.Frame(win)
-    resultado_frame.pack(pady=10)
-
-
-    def guardar():
-
-        for widget in resultado_frame.winfo_children():
+    def save_income():
+        # Limpiar resultados previos
+        for widget in result_frame.winfo_children():
             widget.destroy()
 
-
         try:
-            if not entry_monto.get().strip():
+            if not entry_amount.get().strip():
                 messagebox.showerror("Error", "Debe ingresar un monto")
                 return
 
-            monto_texto = entry_monto.get().strip()
+            amount_text = entry_amount.get().strip()
 
             try:
-                monto = float(monto_texto)
+                amount = float(amount_text)
             except ValueError:
                 messagebox.showerror("Error", "Ingrese solo números, sin puntos ni comas.")
                 return
 
+            has_debt = debt_var.get() == "si"
+            pays_tithe = tithe_var.get() == "si"
 
-            tiene_deudas = var_deudas.get() == "si"
-            paga_diezmo = var_diezmo.get() == "si"
-
-
-            distribucion = main.registrar_ingreso_desde_ui(
-                monto,
-                tiene_deudas,
-                paga_diezmo
+            distribution = main.registrar_ingreso_desde_ui(
+                amount,
+                has_debt,
+                pays_tithe
             )
 
-            if distribucion is None:
+            if distribution is None:
                 messagebox.showwarning(
                     "Ingreso no guardado",
                     "⚠️ El período financiero está cerrado.\nNo se pueden registrar ingresos."
                 )
                 return
 
+            tk.Label(result_frame, text="📊 Distribución del ingreso", font=("Arial", 12, "bold")).pack()
 
-            
-            tk.Label(resultado_frame, text="📊 Distribución del ingreso", font=("Arial", 12, "bold")).pack()
+            for key, value in distribution.items():
+                tk.Label(result_frame, text=f"{key}: ${value:,.0f}").pack()
 
-            for k, v in distribucion.items():
-                tk.Label(resultado_frame, text=f"{k}: ${v:,.0f}").pack()
-    
             # ✅ MENSAJE DE CONFIRMACIÓN
             messagebox.showinfo(
                 "Ingreso guardado",
@@ -338,63 +294,61 @@ def ventana_ingreso():
                 f"Ocurrió este error:\n\n{e}"
             )
 
-
     tk.Button(
         win,
         text="Guardar ingreso",
-        command=guardar
+        command=save_income
     ).pack(pady=10)
 
 
-def ventana_gasto():
+def expense_window():
+    # Ventana para registrar gastos
     win = tk.Toplevel()
     win.title("Registrar gasto")
 
     tk.Label(win, text="Monto del gasto").pack()
-    entry_monto = tk.Entry(win)
-    entry_monto.pack(pady=5)
+    entry_amount = tk.Entry(win)
+    entry_amount.pack(pady=5)
 
-
-    categoria_var = tk.StringVar(value=CATEGORIAS_GASTOS[0])
+    category_var = tk.StringVar(value=EXPENSE_CATEGORIES[0])
 
     tk.Label(win, text="Categoría").pack()
-    tk.OptionMenu(win, categoria_var, *CATEGORIAS_GASTOS).pack(pady=5)
+    tk.OptionMenu(win, category_var, *EXPENSE_CATEGORIES).pack(pady=5)
 
-    entry_otro = tk.Entry(win)
-    entry_otro.pack(pady=5)
-    entry_otro.pack_forget()
+    entry_other = tk.Entry(win)
+    entry_other.pack(pady=5)
+    entry_other.pack_forget()
 
-    def on_categoria_change(*args):
-        if categoria_var.get() == "Otros":
-            entry_otro.pack()
+    def on_category_change(*args):
+        if category_var.get() == "Otros":
+            entry_other.pack()
         else:
-            entry_otro.pack_forget()
+            entry_other.pack_forget()
 
-    categoria_var.trace_add("write", on_categoria_change)
+    category_var.trace_add("write", on_category_change)
 
-    def guardar_gasto():
+    def save_expense():
         try:
-            if not entry_monto.get().strip():
+            if not entry_amount.get().strip():
                 messagebox.showerror("Error", "Debe ingresar un monto")
                 return
 
-            monto = float(entry_monto.get())
-            if monto <= 0:
+            amount = float(entry_amount.get())
+            if amount <= 0:
                 messagebox.showerror("Error", "El monto debe ser mayor a 0")
                 return
 
+            category = category_var.get()
 
-            categoria = categoria_var.get()
-
-            if categoria == "Otros":
-                categoria = entry_otro.get().strip()
-                if not categoria:
+            if category == "Otros":
+                category = entry_other.get().strip()
+                if not category:
                     messagebox.showerror("Error", "Ingrese el nombre del gasto")
                     return
 
-            exito = main.registrar_gasto_desde_ui(monto, categoria)
+            success = main.registrar_gasto_desde_ui(amount, category)
 
-            if not exito:
+            if not success:
                 messagebox.showerror(
                     "Fondos insuficientes",
                     "No hay saldo disponible en Gastos"
@@ -410,24 +364,23 @@ def ventana_gasto():
                 f"Ocurrió un error:\n{e}"
             )
 
-
-
     # ✅ UN SOLO BOTÓN
     tk.Button(
         win,
         text="Guardar gasto",
-        command=guardar_gasto
+        command=save_expense
     ).pack(pady=10)
 
 
-def ventana_reporte():
+def report_window():
+    # Ventana para mostrar reporte mensual
     win = tk.Toplevel()
     win.title("📊 Reporte mensual")
 
-    reporte = main.obtener_reporte_mensual()
-    estado_mes = "Abierto" if main.obtener_estado_mes() else "Cerrado"
+    report = main.obtener_reporte_mensual()
+    month_status = "Abierto" if main.obtener_estado_mes() else "Cerrado"
 
-    if not reporte:
+    if not report:
         tk.Label(
             win,
             text="No hay datos disponibles para mostrar.",
@@ -437,13 +390,12 @@ def ventana_reporte():
 
     tk.Label(
         win,
-        text=f"Mes abierto o cerrado: {estado_mes}",
+        text=f"Mes abierto o cerrado: {month_status}",
         font=("Arial", 10, "italic")
     ).pack(pady=5)
 
-
     # ─── Orden correcto del reporte ───
-    orden_reporte = [
+    report_order = [
         "Diezmo",
         "Mi pago",
         "Mi pago disponible",
@@ -454,14 +406,13 @@ def ventana_reporte():
         "Gastos"
     ]
 
-    for clave in orden_reporte:
-        valor = reporte.get(clave, 0)
+    for key in report_order:
+        value = report.get(key, 0)
         tk.Label(
             win,
-            text=f"{clave}: ${valor:,.0f}",
+            text=f"{key}: ${value:,.0f}",
             anchor="w"
         ).pack(fill="x")
-
 
     tk.Button(
         win,
@@ -470,46 +421,47 @@ def ventana_reporte():
     ).pack(pady=10)
 
 
-def ventana_historial():    
+
+
+def history_window():    
+    # Ventana para mostrar historial mensual
     win = tk.Toplevel()
     win.title("📚 Historial mensual")
     win.transient()
     win.grab_set()
     win.focus_force()
 
-    historial = main.obtener_historial()
+    history = main.obtener_historial()
 
-    def cerrar_ventana():
+    def close_window():
         win.grab_release()
         win.destroy()
 
-    win.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+    win.protocol("WM_DELETE_WINDOW", close_window)
 
-
-    if not historial:
+    if not history:
         tk.Label(
             win,
             text="📭 No hay meses cerrados aún",
             font=("Arial", 11, "italic")
         ).pack(pady=10)
 
-
         win.after(0, lambda: win.grab_release())
         return
 
-
-    for mes in historial:
+    for month in history:
         tk.Label(
             win,
-            text=f"🗓️ {mes['mes']}",
+            text=f"🗓️ {month['mes']}",
             font=("Arial", 11, "bold")
         ).pack(pady=5)
 
-        for k, v in mes["resumen"].items():
-            tk.Label(win, text=f"  {k}: ${v:,.0f}").pack(anchor="w")
+        for key, value in month["resumen"].items():
+            tk.Label(win, text=f"  {key}: ${value:,.0f}").pack(anchor="w")
 
 
-def ventana_comparacion():
+def comparison_window():
+    # Ventana para comparar meses
     try:
         ok = main.grafica_comparacion_mensual()
 
@@ -526,26 +478,24 @@ def ventana_comparacion():
         )
 
 
-def ventana_grafica_mensual():
-    historial = main.obtener_historial_para_grafica()
+def monthly_chart_window():
+    # Ventana para mostrar gráfica mensual
+    history = main.obtener_historial_para_grafica()
 
-    if len(historial) < 2:
+    if len(history) < 2:
         messagebox.showinfo(
             "Gráfica",
             "Se necesitan al menos 2 meses cerrados para mostrar la gráfica"
         )
         return
 
-    meses = [m["mes"] for m in historial]
-    gastos = [m["resumen"].get("Gastos", 0) for m in historial]
-    ahorros = [m["resumen"].get("Ahorro total", 0) for m in historial]
-
-
-
+    months = [m["mes"] for m in history]
+    expenses = [m["resumen"].get("Gastos", 0) for m in history]
+    savings = [m["resumen"].get("Ahorro total", 0) for m in history]
 
     plt.figure()
-    plt.plot(meses, gastos, label="Gastos")
-    plt.plot(meses, ahorros, label="Ahorro total")
+    plt.plot(months, expenses, label="Gastos")
+    plt.plot(months, savings, label="Ahorro total")
     plt.title("Evolución financiera mensual")
     plt.xlabel("Mes")
     plt.ylabel("Monto ($)")
@@ -557,66 +507,63 @@ def ventana_grafica_mensual():
     plt.show()
 
 
-def exportar_csv():
+def export_csv():
+    # Exportar historial a CSV
     if main.exportar_historial_csv():
         messagebox.showinfo(
             "CSV",
             "Historial exportado correctamente",
-            parent=herramientas
+            parent=tools_window
         )
     else:
         messagebox.showwarning(
             "CSV",
             "No hay historial para exportar",
-            parent=herramientas
+            parent=tools_window
         )
 
 
-
-def ventana_analisis():
-    mensaje = main.analisis_financiero()
+def analysis_window():
+    # Ventana para mostrar análisis financiero
+    message = main.analisis_financiero()
 
     messagebox.showinfo(
         "🧠 Análisis financiero",
-        mensaje,
-        parent=herramientas
+        message,
+        parent=tools_window
     )
 
 
-
-def ventana_alertas():
+def alerts_window():
+    # Ventana para mostrar alertas financieras
     win = tk.Toplevel()
     win.title("🔔 Alertas financieras")
     win.transient()
     win.grab_set()
     win.focus_force()
 
-
-    def cerrar_ventana():
+    def close_window():
         win.grab_release()
         win.destroy()
-    win.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+    win.protocol("WM_DELETE_WINDOW", close_window)
 
+    alerts = main.analizar_alertas()
 
-    alertas = main.analizar_alertas()
-
-    if not alertas:
+    if not alerts:
         tk.Label(win, text="✅ No hay alertas. Buen trabajo 👏").pack(pady=10)
         win.after(0, lambda: win.grab_release())
         return
 
-
-    for a in alertas:
-        tk.Label(win, text=a, fg="red").pack(anchor="w", padx=10)
+    for alert in alerts:
+        tk.Label(win, text=alert, fg="red").pack(anchor="w", padx=10)
 
 
 # ==============================
-    # EJECUCIÓN
+# EJECUCIÓN
 # ==============================
 
 if __name__ == "__main__":
-    if tiene_password():
+    if has_password():
         login()
     else:
-        crear_password()
-
+        create_password()
