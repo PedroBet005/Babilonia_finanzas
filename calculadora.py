@@ -1,19 +1,20 @@
-def distribuir_ingreso(monto, tiene_deudas, paga_diezmo):
 
-    diezmo = monto * 0.10 if paga_diezmo else 0
+def distribute_income(amount, has_debt, pays_tithe):
 
-    if tiene_deudas:
+    tithe  = amount * 0.10 if pays_tithe else 0
+
+    if has_debt:
         return {
-            "Diezmo": diezmo,
-            "Mi pago": monto * 0.10,
-            "Deudas": monto * 0.10,
-            "Gastos": monto * 0.70
+            "Diezmo": tithe,
+            "Mi pago": amount * 0.10,
+            "Deudas": amount * 0.10,
+            "Gastos": amount * 0.70
         }
     else:
         return {
-            "Diezmo": diezmo,
-            "Mi pago": monto * 0.10,
-            "Gastos": monto * 0.80
+            "Diezmo": tithe,
+            "Mi pago": amount * 0.10,
+            "Gastos": amount * 0.80
         }
 
 
