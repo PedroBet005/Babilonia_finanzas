@@ -114,7 +114,43 @@ MESSAGES = {
 
     "alert_high_expenses": "⚠️ Gastos superan el 60% del ingreso",
     "alert_low_savings": "⚠️ Ahorro menor al 10% del ingreso",
-    "alert_leisure_increase": "⚠️ Ocio aumentó más del 20%"
+    "alert_leisure_increase": "⚠️ Ocio aumentó más del 20%",
+
+
+# ****************************************************
+
+    "current_month": "Mes actual",
+    "open": "Abierto",
+    "income": "Ingresos",
+    "expenses": "Gastos",
+    "goals": "Metas",
+    "closures": "Cierres",
+    "history": "Historial",
+    "adjustments": "Ajustes",
+    "savings": "Ahorro",
+    "emergency": "Emergencia",
+    "total": "Total",
+    "summary": "Resumen",
+    "tithe": "Diezmo",
+    "my_payment": "Mi pago",
+    "available_payment": "Mi pago disponible",
+    "debts": "Deudas",
+    "chart_expenses": "Gastos gráficos",
+    "general_saving": "Ahorro general",
+
+
+
+# ***********************************************************************
+
+
+
+    "save_ok": "GUARDADO OK ",
+    "save_error": "ERROR AL GUARDAR: "
+
+
+
+
+
 
 
 }

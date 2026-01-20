@@ -115,7 +115,39 @@ MESSAGES = {
 
     "alert_high_expenses": "⚠️ Expenses exceed 60% of income",
     "alert_low_savings": "⚠️ Savings below 10% of income",
-    "alert_leisure_increase": "⚠️ Leisure spending increased by more than 20%"
+    "alert_leisure_increase": "⚠️ Leisure spending increased by more than 20%",
+
+
+# *********************************************************************
+
+    "current_month": "Current month",
+    "open": "Open",
+    "income": "Income",
+    "expenses": "Expenses",
+    "goals": "Goals",
+    "closures": "Closures",
+    "history": "History",
+    "adjustments": "Adjustments",
+    "savings": "Savings",
+    "emergency": "Emergency",
+    "total": "Total",
+    "summary": "Summary",
+    "tithe": "Tithe",
+    "my_payment": "My payment",
+    "available_payment": "Available payment",
+    "debts": "Debts",
+    "chart_expenses": "Chart expenses",
+    "general_saving": "General saving",
+
+
+#***************************************************************
+
+    "save_ok": "SAVE OK" ,
+    "save_error": "ERROR SAVING: "
+
+
+
+
 
 
 }
