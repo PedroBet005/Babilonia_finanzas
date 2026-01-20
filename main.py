@@ -9,7 +9,18 @@ import shutil
 import os
 import json
 import rules
+from i18n import set_language, t
 
+
+
+# Selección inicial de idioma (SIN t todavía)
+lang = input("Choose language / Elija idioma (en/es): ").strip().lower()
+set_language(lang)
+
+
+
+# Cambiar idioma según cliente
+set_language("en")  # 'es' para español, 'en' para inglés
 
 
 # ⚠️ IMPORTANTE:
@@ -78,12 +89,12 @@ def backup_data():
 def reset_data():
     # Reiniciar datos en modo pruebas
     if not TEST_MODE:
-        print("🚫 Reinicio bloqueado (Modo Producción activado).")
+        print(t("🚫 Reinicio bloqueado (Modo Producción activado)."))
         return
 
-    confirmation = input("⚠️ Esto borrará TODOS los datos. ¿Confirmar? (si/no):\n ").lower()
+    confirmation = input(t("⚠️ Esto borrará TODOS los datos. ¿Confirmar? (si/no):\n ")).lower()
     if confirmation != "si":
-        print("❌ Operación cancelada.")
+        print(t("❌ Operación cancelada."))
         return
 
     initial_data = {
@@ -111,7 +122,7 @@ def reset_data():
     }
 
     save_data(initial_data)
-    print("🧹 Datos reiniciados correctamente (Modo Pruebas).")
+    print(t("🧹 Datos reiniciados correctamente (Modo Pruebas)."))
 
 
 def register_income():
@@ -119,22 +130,22 @@ def register_income():
     data = load_data()
 
     if not data["abierto"]:
-        print("🔒 El mes está cerrado. No se pueden registrar movimientos.")
+        print(t("🔒 El mes está cerrado. No se pueden registrar movimientos."))
         return
 
     # --- INGRESO ---
     try:
-        amount = float(input("Ingrese el monto del ingreso:\n "))
+        amount = float(input(t("Ingrese el monto del ingreso:\n ")))
         if amount <= 0:
-            print("❌ El monto debe ser mayor a 0")
+            print(t("❌ El monto debe ser mayor a 0"))
             return
     except ValueError:
-        print("❌ Ingrese un número válido")
+        print(t("❌ Ingrese un número válido"))
         return
 
     # --- VALIDACIÓN SI / NO (DEUDAS) ---
     while True:
-        response = input("¿Tiene deudas? (si/no):\n ").strip().lower()
+        response = input((t"¿Tiene deudas? (si/no):\n ")).strip().lower()
 
         if response in ["si", "sí"]:
             has_debts = True
@@ -143,11 +154,11 @@ def register_income():
             has_debts = False
             break
         else:
-            print("❌ Respuesta inválida. Escriba únicamente: si o no.")
+            print(t("❌ Respuesta inválida. Escriba únicamente: si o no."))
 
     # --- VALIDACIÓN SI / NO (DIEZMO) ---
     while True:
-        tithe_resp = input("¿Desea pagar diezmo? (si/no):\n ").strip().lower()
+        tithe_resp = input(t("¿Desea pagar diezmo? (si/no):\n ")).strip().lower()
 
         if tithe_resp in ["si", "sí"]:
             pay_tithe = True
@@ -156,7 +167,7 @@ def register_income():
             pay_tithe = False
             break
         else:
-            print("❌ Respuesta inválida. Escriba únicamente: si o no.")
+            print(t("❌ Respuesta inválida. Escriba únicamente: si o no."))
 
 
     # --- DISTRIBUCIÓN BASE ---
@@ -192,21 +203,21 @@ def register_income():
     save_data(data)
 
     # --- SALIDA CLARA EN CONSOLA ---
-    print("\n📊 DISTRIBUCIÓN DEL INGRESO")
+    print(t("\n📊 DISTRIBUCIÓN DEL INGRESO"))
     if pay_tithe and distribution["Diezmo"] > 0:
-        print(f"Diezmo: ${distribution['Diezmo']:,.0f}")
+        print(t(f"Diezmo: ${distribution['Diezmo']:,.0f}"))
 
-    print(f"Mi pago bruto: ${my_payment:,.0f}")
+    print(t(f"Mi pago bruto: ${my_payment:,.0f}"))
 
     if has_debts and "Deudas" in distribution:
-        print(f"Deudas: ${distribution['Deudas']:,.0f}")
+        print(t(f"Deudas: ${distribution['Deudas']:,.0f}"))
 
-    print("\n🏦 Ahorro automático desde Mi pago:")
-    print(f"  - Emergencia (5%): ${emergency_saving:,.0f}")
-    print(f"  - Ahorro general (5%): ${general_saving:,.0f}")
+    print(t("\n🏦 Ahorro automático desde Mi pago:"))
+    print(t(f"  - Emergencia (5%): ${emergency_saving:,.0f}"))
+    print(t(f"  - Ahorro general (5%): ${general_saving:,.0f}"))
 
-    print(f"\n💰 Mi pago disponible: ${distribution['Mi pago disponible']:,.0f}")
-    print(f"Gastos: ${distribution['Gastos']:,.0f}")
+    print(t(f"\n💰 Mi pago disponible: ${distribution['Mi pago disponible']:,.0f}"))
+    print(t(f"Gastos: ${distribution['Gastos']:,.0f}"))
 
 
 
@@ -222,37 +233,37 @@ def register_expense():
     data = load_data()
 
     if not data["abierto"]:
-        print("🔒 El mes está cerrado. No se pueden registrar movimientos.")
+        print(t("🔒 El mes está cerrado. No se pueden registrar movimientos."))
         return
 
-    print("\n📂 Categorías de gasto:")
+    print(t("\n📂 Categorías de gasto:"))
     for i, category in enumerate(EXPENSE_CATEGORIES, start=1):
-        print(f"{i:<2} {category}")
+        print(t(f"{i:<2} {category}"))
 
 
     try:
-        option = int(input("Seleccione una categoría:\n "))
+        option = int(input(t("Seleccione una categoría:\n ")))
         if option < 1 or option > len(EXPENSE_CATEGORIES):
-            print("❌ Opción inválida")
+            print(t("❌ Opción inválida"))
             return
         category = EXPENSE_CATEGORIES[option - 1]
     except ValueError:
-        print("❌ Debe ingresar un número")
+        print(t("❌ Debe ingresar un número"))
         return
 
 
     while True:
         try:
-            amount = float(input("Ingrese el monto del gasto:\n "))
+            amount = float(input(t("Ingrese el monto del gasto:\n ")))
             if amount <= 0:
-                print("❌ El monto debe ser mayor a 0")
+                print(t("❌ El monto debe ser mayor a 0"))
                 continue
             break
         except ValueError:
-            print("❌ Ingrese un número válido")
+            print(t("❌ Ingrese un número válido"))
 
     if amount > data["resumen"]["Gastos"]:
-        print("🚨 No tienes presupuesto suficiente para este gasto.")
+        print(t("🚨 No tienes presupuesto suficiente para este gasto."))
         return
 
     data["gastos"].append({
@@ -263,14 +274,14 @@ def register_expense():
     data["resumen"]["Gastos"] -= amount
     save_data(data)
 
-    print(f"✅ Gasto registrado en '{category}' por ${amount:,.0f}")
+    print(t(f"✅ Gasto registrado en '{category}' por ${amount:,.0f}"))
 
 
 def create_goal():
     data = load_data()
 
-    name = input("Nombre de la meta: ")
-    target_amount = float(input("Monto objetivo: "))
+    name = input(t("Nombre de la meta: "))
+    target_amount = float(input(t("Monto objetivo: ")))
 
     goal = {
         "nombre": name,
@@ -281,40 +292,40 @@ def create_goal():
     data["metas"].append(goal)
     save_data(data)
 
-    print(f"🎯 Meta '{name}' creada con objetivo ${target_amount:,.0f}")
+    print(t(f"🎯 Meta '{name}' creada con objetivo ${target_amount:,.0f}"))
 
 
 def contribute_goal():
     data = load_data()
 
     if not data["metas"]:
-        print("❌ No hay metas creadas")
+        print(t("❌ No hay metas creadas"))
         return
 
-    print("\n🎯 Metas:")
+    print(t("\n🎯 Metas:"))
     for i, goal in enumerate(data["metas"], start=1):
-        print(f"{i}. {goal['nombre']} (${goal['ahorrado']:,.0f} / ${goal['objetivo']:,.0f})")
+        print(t(f"{i}. {goal['nombre']} (${goal['ahorrado']:,.0f} / ${goal['objetivo']:,.0f})"))
 
     try:
-        option = int(input("Seleccione una meta (número):\n "))
+        option = int(input(t("Seleccione una meta (número):\n ")))
         if option < 1 or option > len(data["metas"]):
-            print("❌ Opción fuera de rango")
+            print(t("❌ Opción fuera de rango"))
             return
     except ValueError:
-        print("❌ Debe ingresar un número")
+        print(t("❌ Debe ingresar un número"))
         return
 
     try:
-        amount = float(input("Monto a aportar: "))
+        amount = float(input(t("Monto a aportar: ")))
         if amount <= 0:
-            print("❌ El monto debe ser mayor a 0")
+            print(t("❌ El monto debe ser mayor a 0"))
             return
     except ValueError:
-        print("❌ Monto inválido")
+        print(t("❌ Monto inválido"))
         return
 
     if amount > data["ahorro"]["total"]:
-        print("🚨 No tienes ahorro suficiente")
+        print(t("🚨 No tienes ahorro suficiente"))
         return
 
     index = option - 1
@@ -322,14 +333,14 @@ def contribute_goal():
     data["metas"][index]["ahorrado"] += amount
 
     save_data(data)
-    print("✅ Aporte realizado correctamente")
+    print(t("✅ Aporte realizado correctamente"))
 
 
 def expense_chart():
     data = load_data()
 
     if not data["gastos"]:
-        print("❌ No hay gastos registrados")
+        print(t("❌ No hay gastos registrados"))
         return
 
     categories = {}
@@ -354,7 +365,7 @@ def goals_chart():
     data = load_data()
 
     if not data["metas"]:
-        print("❌ No hay metas registradas")
+        print(t("❌ No hay metas registradas"))
         return
 
     names = [goal["nombre"] for goal in data["metas"]]
@@ -376,21 +387,21 @@ def goals_chart():
 def financial_report():
     data = load_data()
 
-    print("\n📊 REPORTE FINANCIERO GENERAL")
+    print(t("\n📊 REPORTE FINANCIERO GENERAL"))
 
     total_income = sum(i["monto"] for i in data["ingresos"])
     total_expenses = sum(e["monto"] for e in data["gastos"])
 
-    print(f"Ingresos totales: ${total_income:,.0f}")
-    print(f"Gastos totales:   ${total_expenses:,.0f}")
+    print(t(f"Ingresos totales: ${total_income:,.0f}"))
+    print(t(f"Gastos totales:   ${total_expenses:,.0f}"))
 
     balance = total_income - total_expenses
-    print(f"Balance:          ${balance:,.0f}")
+    print(t(f"Balance:          ${balance:,.0f}"))
 
-    print("\n🏦 AHORROS")
-    print(f"Ahorro emergencia: ${data['resumen']['Ahorro emergencia']:,.0f}")
-    print(f"Ahorro general: ${data['resumen']['Ahorro general']:,.0f}")
-    print(f"Ahorro total: ${data['resumen']['Ahorro total']:,.0f}")
+    print(t("\n🏦 AHORROS"))
+    print(t(f"Ahorro emergencia: ${data['resumen']['Ahorro emergencia']:,.0f}"))
+    print(t(f"Ahorro general: ${data['resumen']['Ahorro general']:,.0f}"))
+    print(t(f"Ahorro total: ${data['resumen']['Ahorro total']:,.0f}"))
 
 
 def check_month_close(data):
@@ -440,18 +451,18 @@ def check_month_close(data):
 
         save_data(data)
 
-        print("📦 Mes cerrado automáticamente.")
+        print(t("📦 Mes cerrado automáticamente."))
 
 
 def register_adjustment():
     data = load_data()
 
     if not data["abierto"]:
-        print("🔒 No se pueden hacer ajustes en meses cerrados.")
+        print(t("🔒 No se pueden hacer ajustes en meses cerrados."))
         return
 
-    description = input("Descripción del ajuste:\n ")
-    amount = float(input("Monto del ajuste (+ o -): "))
+    description = input(t("Descripción del ajuste:\n "))
+    amount = float(input(t("Monto del ajuste (+ o -): ")))
 
     data["ajustes"].append({
         "fecha": datetime.now().isoformat(),
@@ -462,17 +473,17 @@ def register_adjustment():
     data["resumen"]["Gastos"] += amount
     save_data(data)
 
-    print("✏️ Ajuste registrado (queda en historial).")
+    print(t("✏️ Ajuste registrado (queda en historial)."))
 
 
 def view_history():
     data = load_data()
 
-    print("\n📚 HISTORIAL FINANCIERO")
+    print(t("\n📚 HISTORIAL FINANCIERO"))
     for month in data["historial"]:
-        print(f"\n🗓️ Mes: {month['mes']}")
+        print(t(f"\n🗓️ Mes: {month['mes']}"))
         for key, value in month["resumen"].items():
-            print(f"{key}: ${value:,.0f}")
+            print(t(f"{key}: ${value:,.0f}"))
 
 
 def get_history():
@@ -616,7 +627,7 @@ def monthly_comparison_chart():
     history = get_history()
 
     if len(history) < 1:
-        print("❌ No hay meses suficientes para comparar.")
+        print(t("❌ No hay meses suficientes para comparar."))
         return False
 
     months = []
@@ -726,20 +737,20 @@ def main_menu():
     while True:
 
         mode = "🧪 PRUEBAS" if TEST_MODE else "🔒 PRODUCCIÓN"
-        print(f"\n🏛️ FINANZAS DE BABILONIA — {mode}")
+        print(t(f"\n🏛️ FINANZAS DE BABILONIA — {mode}"))
 
-        print("\n🏛️ FINANZAS DE BABILONIA")
-        print("1. Registrar ingreso")
-        print("2. Registrar gasto")
-        print("3. Crear meta financiera")
-        print("4. Aportar a meta")
-        print("5. Ver reporte financiero")
-        print("6. Gráfica de gastos")
-        print("7. Gráfica de metas")
-        print("8. Reiniciar datos")
-        print("9. Salir")
+        print(t("\n🏛️ FINANZAS DE BABILONIA"))
+        print(t("1. Registrar ingreso"))
+        print(t("2. Registrar gasto"))
+        print(t("3. Crear meta financiera"))
+        print(t("4. Aportar a meta"))
+        print(t("5. Ver reporte financiero"))
+        print(t("6. Gráfica de gastos"))
+        print(t("7. Gráfica de metas"))
+        print(t("8. Reiniciar datos"))
+        print(t("9. Salir"))
 
-        option = input("Seleccione una opción:\n ")
+        option = input(t("Seleccione una opción:\n "))
 
         if option == "1":
             register_income()
@@ -766,11 +777,11 @@ def main_menu():
             reset_data()
 
         elif option == "9":
-            print("👋 Hasta pronto. Protege tu oro.")
+            print(t("👋 Hasta pronto. Protege tu oro."))
             break
 
         else:
-            print("❌ Opción inválida")
+            print(t("❌ Opción inválida"))
 
 
 def get_history_for_chart():
