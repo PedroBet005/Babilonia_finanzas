@@ -19,10 +19,6 @@ set_language(lang)
 
 
 
-# Cambiar idioma según cliente
-set_language("en")  # 'es' para español, 'en' para inglés
-
-
 # ⚠️ IMPORTANTE:
 # Los datos reales de la aplicación se guardan en:
 # C:\Users\<Usuario>\AppData\Roaming\BabiloniaFinanzas
@@ -145,7 +141,7 @@ def register_income():
 
     # --- VALIDACIÓN SI / NO (DEUDAS) ---
     while True:
-        response = input((t"¿Tiene deudas? (si/no):\n ")).strip().lower()
+        response = input(t("has_debts")).strip().lower()
 
         if response in ["si", "sí"]:
             has_debts = True
@@ -396,7 +392,7 @@ def financial_report():
     print(t(f"Gastos totales:   ${total_expenses:,.0f}"))
 
     balance = total_income - total_expenses
-    print(t(f"Balance:          ${balance:,.0f}"))
+    print(f"{t('balance')} ${balance:,.0f}")
 
     print(t("\n🏦 AHORROS"))
     print(t(f"Ahorro emergencia: ${data['resumen']['Ahorro emergencia']:,.0f}"))
@@ -750,7 +746,7 @@ def main_menu():
         print(t("8. Reiniciar datos"))
         print(t("9. Salir"))
 
-        option = input(t("Seleccione una opción:\n "))
+        option = input(t("select_option") + "\n")
 
         if option == "1":
             register_income()
