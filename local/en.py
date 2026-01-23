@@ -3,7 +3,18 @@ MESSAGES = {
     "welcome": "Welcome to Babylon Finances!",
 
 
-# --- print/input
+
+    "category_food": "Food",
+    "category_transport": "Transportation",
+    "category_housing": "Housing",
+    "category_services": "Utilities",
+    "category_education": "Education",
+    "category_health": "Health",
+    "category_leisure": "Leisure",
+    "category_other": "Other",
+
+
+    # --- print/input
 
     
     "reset_blocked_prod": "🚫 Reset blocked (Production mode enabled).",
@@ -13,19 +24,18 @@ MESSAGES = {
 
     "enter_income_amount": "Enter income amount:\n ",
 
-    "has_debts_question": "Do you have debts? (yes/no):\n ",
+    "has_debts": "Do you have debts? (yes/no):\n ",
     "invalid_yes_no": "❌ Invalid response. Please type only: yes or no.",
-    "pay_tithe_question": "Do you want to pay tithe? (yes/no):\n ",
+    "pay_tithe": "Do you want to pay tithe? (yes/no):\n ",
 
     "income_distribution_title": "\n📊 INCOME DISTRIBUTION",
     "tithe_label": "Tithe:",
-    "gross_payment_label": "Gross payment:",
+    "gross_payment_label": "My payment:",
     "debts_label": "Debts:",
-    "auto_savings_title": "\n🏦 Automatic savings from payment:",
-    "emergency_saving_label": "  - Emergency (5%):",
-    "general_saving_label": "  - General savings (5%):",
-    "net_payment_label": "\n💰 Net available payment:",
     "expenses_label": "Expenses:",
+    "emergency_saving_label": "Emergency savings:",
+    "general_saving_label": "General savings:",
+    "net_payment_label": "Net payment:",
 
 
 
@@ -34,7 +44,7 @@ MESSAGES = {
     
     
     
-    "month_closed": "🔒 The month is closed. No transactions can be registered.",
+    "period_closed": "🔒 The month is closed. No transactions can be registered.",
     "expense_categories_title": "\n📂 Expense categories:",
     "select_category": "Select a category:\n ",
     "invalid_option": "❌ Invalid option. Please try again",
@@ -66,9 +76,9 @@ MESSAGES = {
     "total_expenses": "Total expenses:",
     "balance": "Balance:",
     "savings_title": "\n🏦 SAVINGS",
-    "emergency_savings": "Emergency savings:",
-    "general_savings": "General savings:",
-    "total_savings": "Total savings:",
+    "emergency_savings": "Ahorro de emergencia: ${amount:,.0f}",
+    "general_savings": "General savings: ${amount:,.0f}",
+    "total_savings": "Total savings: ${amount:,.0f}",
 
     "month_closed_auto": "📦 Month closed automatically.",
 
@@ -116,31 +126,18 @@ MESSAGES = {
     "alert_high_expenses": "⚠️ Expenses exceed 60% of income",
     "alert_low_savings": "⚠️ Savings below 10% of income",
     "alert_leisure_increase": "⚠️ Leisure spending increased by more than 20%",
+    "expense.saved": "✅ Gasto registrado en '{category}' por ${amount:,.0f}",
+    "goal.created": "🎯 Goal '{name}' created with target ${target_amount:,.0f}",
+    "goal.progress": "{index}. {name} (${saved:,.0f} / ${target:,.0f})",
 
 
-# *********************************************************************
+    # *********************************************************************
 
-    "current_month": "Current month",
-    "open": "Open",
-    "income": "Income",
-    "expenses": "Expenses",
-    "goals": "Goals",
-    "closures": "Closures",
-    "history": "History",
-    "adjustments": "Adjustments",
-    "savings": "Savings",
-    "emergency": "Emergency",
-    "total": "Total",
-    "summary": "Summary",
-    "tithe": "Tithe",
-    "my_payment": "My payment",
-    "available_payment": "Available payment",
-    "debts": "Debts",
-    "chart_expenses": "Chart expenses",
+
     "general_saving": "General saving",
 
 
-#***************************************************************
+    #***************************************************************
 
     "save_ok": "SAVE OK" ,
     "save_error": "ERROR SAVING: "

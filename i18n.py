@@ -8,6 +8,7 @@ LANGUAGES = {
     "en": en.MESSAGES
 }
 
+
 current_lang = "es"  # Por defecto español
 
 def set_language(lang_code):
@@ -15,7 +16,8 @@ def set_language(lang_code):
     if lang_code in LANGUAGES:
         current_lang = lang_code
     else:
-        print(f"Language {lang_code} not supported. Using default.")
+        current_lang = "es"
+
 
 def t(message_key):
     """Función para obtener el mensaje traducido"""

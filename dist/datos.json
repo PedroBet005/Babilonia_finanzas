@@ -1,18 +1,90 @@
 {
-    "password_hash": "",
+    "password_hash": "b370308a25094fcd44b3c292832a7ede679ae9c8ea99dfd7ef148ac003d5b746",
     "abierto": true,
-    "ingresos": [],
-    "gastos": [],
+    "ingresos": [
+        {
+            "fecha": "2026-01-16T06:47:44.114449",
+            "monto": 28535043.0,
+            "tiene_deudas": false,
+            "distribucion": {
+                "Diezmo": 0,
+                "Mi pago": 2853504.3000000003,
+                "Gastos": 25681538.7,
+                "Ahorro emergencia": 142675.21500000003,
+                "Ahorro general": 142675.21500000003,
+                "Ahorro total": 285350.43000000005,
+                "Mi pago disponible": 2568153.87
+            }
+        }
+    ],
+    "gastos": [
+        {
+            "monto": 3773820.0,
+            "categoria": "Alimentaci\u00f3n"
+        },
+        {
+            "monto": 278850.0,
+            "categoria": "Hijas"
+        },
+        {
+            "monto": 10192117.0,
+            "categoria": "Convenios"
+        },
+        {
+            "monto": 105374.0,
+            "categoria": "Coopemsura"
+        },
+        {
+            "monto": 1875759.0,
+            "categoria": "Combustible"
+        },
+        {
+            "monto": 585000.0,
+            "categoria": "Vehiculo"
+        },
+        {
+            "monto": 528999.0,
+            "categoria": "Servicios Publicos"
+        },
+        {
+            "monto": 630334.0,
+            "categoria": "Gastos operativos"
+        },
+        {
+            "monto": 7564752.0,
+            "categoria": "Proyecto productivo"
+        },
+        {
+            "monto": 83720.0,
+            "categoria": "Servicios Publicos"
+        },
+        {
+            "monto": 14400.0,
+            "categoria": "Gastos operativos"
+        },
+        {
+            "monto": 15450.0,
+            "categoria": "Alimentaci\u00f3n"
+        },
+        {
+            "monto": 15473.0,
+            "categoria": "Combustible"
+        },
+        {
+            "monto": 15640.0,
+            "categoria": "Gastos operativos"
+        }
+    ],
     "historial": [],
     "resumen": {
-        "Ingresos": 0,
-        "Gastos": 0,
-        "Ahorro total": 0,
+        "Ingresos": 28535043.0,
+        "Gastos": 1850.699999999255,
+        "Ahorro total": 285350.43000000005,
         "Diezmo": 0,
         "Deudas": 0,
-        "Mi pago": 0,
-        "Ahorro emergencia": 0,
-        "Ahorro general": 0,
-        "Mi pago disponible": 0
+        "Mi pago": 2853504.3000000003,
+        "Ahorro emergencia": 142675.21500000003,
+        "Ahorro general": 142675.21500000003,
+        "Mi pago disponible": 2568153.87
     }
 }

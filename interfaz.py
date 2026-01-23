@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import messagebox
 import main
@@ -7,7 +6,14 @@ import matplotlib.pyplot as plt
 from rules import EXPENSE_CATEGORIES
 import hashlib
 import os
+from i18n import set_language, t
 
+
+
+def start():
+    lang = input("Choose language / Elija idioma (en/es): ").strip().lower()
+    set_language(lang)
+    main.run()
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -22,7 +28,7 @@ def generate_hash(password):
 
 
 def has_password():
-    data = main.cargar_datos()
+    data = main.load_data()
     return "password_hash" in data
 
 
@@ -41,7 +47,7 @@ def create_password():
             messagebox.showerror("Error", "La contraseña no puede estar vacía")
             return
 
-        data = main.cargar_datos()  # ← NO crear dict nuevo
+        data = main.load_data()  # ← NO crear dict nuevo
         data["password_hash"] = generate_hash(password)
         main.guardar_datos(data)
 
@@ -64,7 +70,7 @@ def login():
 
     def validate_pw():
         password = pw_entry.get()
-        data = main.cargar_datos()
+        data = main.load_data()
 
         if generate_hash(password) == data["password_hash"]:
             login_window.destroy()
@@ -565,7 +571,4 @@ def alerts_window():
 # ==============================
 
 if __name__ == "__main__":
-    if has_password():
-        login()
-    else:
-        create_password()
+    start()

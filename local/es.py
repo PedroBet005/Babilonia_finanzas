@@ -3,6 +3,18 @@ MESSAGES = {
     "welcome": "¡Bienvenido a Babilonia Finanzas!",
 
 
+    "category_food": "Alimentación",
+    "category_transport": "Transporte",
+    "category_housing": "Vivienda",
+    "category_services": "Servicios",
+    "category_education": "Educación",
+    "category_health": "Salud",
+    "category_leisure": "Ocio",
+    "category_other": "Otros",
+
+
+
+
     # --- print/input
 
     "reset_blocked_prod": "🚫 Reinicio bloqueado (Modo Producción activado).",
@@ -10,29 +22,26 @@ MESSAGES = {
     "operation_cancelled": "❌ Operación cancelada.",
     "data_reset_ok": "🧹 Datos reiniciados correctamente (Modo Pruebas).",
 
-    "month_closed": "🔒 El mes está cerrado. No se pueden registrar movimientos.",
+    "period_closed": "🔒 El mes está cerrado. No se pueden registrar movimientos.",
     "enter_income_amount": "Ingrese el monto del ingreso:\n ",
 
-    "has_debts_question": "¿Tiene deudas? (si/no):\n ",
+    "has_debts": "¿Tiene deudas? (si/no):\n ",
     "invalid_yes_no": "❌ Respuesta inválida. Escriba únicamente: si o no.",
-    "pay_tithe_question": "¿Desea pagar diezmo? (si/no):\n ",
+    "pay_tithe": "¿Desea pagar diezmo? (si/no):\n ",
 
     "income_distribution_title": "\n📊 DISTRIBUCIÓN DEL INGRESO",
     "tithe_label": "Diezmo:",
-    "gross_payment_label": "Mi pago bruto:",
+    "gross_payment_label": "Mi pago:",
     "debts_label": "Deudas:",
-    "auto_savings_title": "\n🏦 Ahorro automático desde Mi pago:",
-    "emergency_saving_label": "  - Emergencia (5%):",
-    "general_saving_label": "  - Ahorro general (5%):",
-    "net_payment_label": "\n💰 Mi pago disponible:",
     "expenses_label": "Gastos:",
+    "emergency_saving_label": "Ahorro de emergencia:",
+    "general_saving_label": "Ahorro general:",
+    "net_payment_label": "Mi pago neto:",
 
 
 
 
 
-
-    "month_closed": "🔒 El mes está cerrado. No se pueden registrar movimientos.",
     "expense_categories_title": "\n📂 Categorías de gasto:",
     "select_category": "Seleccione una categoría:\n ",
     "invalid_option": "❌ Opción inválida. Intente de nuevo.",
@@ -64,9 +73,9 @@ MESSAGES = {
     "total_expenses": "Gastos totales:",
     "balance": "Balance:",
     "savings_title": "\n🏦 AHORROS",
-    "emergency_savings": "Ahorro emergencia:",
-    "general_savings": "Ahorro general:",
-    "total_savings": "Ahorro total:",
+    "emergency_savings": "Ahorro de emergencia: ${amount:,.0f}",
+    "general_savings": "Ahorro general: ${amount:,.0f}",
+    "total_savings": "Ahorro total: ${amount:,.0f}",
 
     "month_closed_auto": "📦 Mes cerrado automáticamente.",
 
@@ -85,7 +94,6 @@ MESSAGES = {
     "not_enough_months_to_compare": "❌ No hay meses suficientes para comparar.",
 
     "chart_income": "Ingresos",
-    "chart_expenses": "Gastos",
     "chart_savings": "Ahorro",
     "chart_monthly_comparison_title": "Comparación mensual",
     "chart_month": "Mes",
@@ -115,26 +123,16 @@ MESSAGES = {
     "alert_high_expenses": "⚠️ Gastos superan el 60% del ingreso",
     "alert_low_savings": "⚠️ Ahorro menor al 10% del ingreso",
     "alert_leisure_increase": "⚠️ Ocio aumentó más del 20%",
+    "expense.saved": "✅ Gasto registrado en '{category}' por ${amount:,.0f}",
+    "goal.created": "🎯 Meta '{name}' creada con objetivo ${target_amount:,.0f}",
+    "goal.progress": "{index}. {name} (${saved:,.0f} / ${target:,.0f})",
+
+
 
 
 # ****************************************************
 
-    "current_month": "Mes actual",
-    "open": "Abierto",
-    "income": "Ingresos",
-    "expenses": "Gastos",
-    "goals": "Metas",
-    "closures": "Cierres",
-    "history": "Historial",
-    "adjustments": "Ajustes",
-    "savings": "Ahorro",
-    "emergency": "Emergencia",
-    "total": "Total",
-    "summary": "Resumen",
-    "tithe": "Diezmo",
-    "my_payment": "Mi pago",
-    "available_payment": "Mi pago disponible",
-    "debts": "Deudas",
+
     "chart_expenses": "Gastos gráficos",
     "general_saving": "Ahorro general",
 

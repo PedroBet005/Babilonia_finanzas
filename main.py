@@ -9,16 +9,18 @@ import shutil
 import os
 import json
 import rules
-from i18n import set_language, t
+from i18n import t
 
 
 
-# Selección inicial de idioma (SIN t todavía)
-lang = input("Choose language / Elija idioma (en/es): ").strip().lower()
-set_language(lang)
+
+def main_menu():
+    print(t("welcome"))
+    # resto del menú
 
 
-print(t("welcome"))
+def run():
+    main_menu()
 
 
 # ⚠️ IMPORTANTE:
@@ -68,11 +70,30 @@ def save_data(data):
 
 
 def load_data():
-    # Cargar datos desde JSON
     if os.path.exists(DATA_PATH):
         with open(DATA_PATH, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return {}
+            data = json.load(f)
+    else:
+        data = {}
+
+    # 🔒 ESTRUCTURA PRINCIPAL
+    data.setdefault("income", [])
+    data.setdefault("expenses", [])
+    data.setdefault("goals", [])
+
+    # 🔒 RESUMEN
+    data.setdefault("summary", {})
+    data["summary"].setdefault("emergency_saving", 0)
+    data["summary"].setdefault("general_saving", 0)
+    data["summary"].setdefault("total_saving", 0)
+
+    # 🔒 CONTROL DE SESIÓN / ESTADO
+    data.setdefault("open", True)
+
+    return data
+
+
+
 
 
 def backup_data():
@@ -114,7 +135,7 @@ def reset_data():
         "my_payment": 0,
         "available_payment": 0,
         "debts": 0,
-        "chart_expenses": 0,
+        "cexpenses": 0,
         "emergency_saving": 0,
         "general_saving": 0
     }
@@ -126,12 +147,12 @@ def reset_data():
 
 
 def register_income():
-    # Registrar un ingreso nuevo
     data = load_data()
 
-    if not data["open"]:
-        print(t("month_closed"))
+    if not data.get("open", True):
+        print(t("period_closed"))
         return
+    
 
     # --- INGRESO ---
     try:
@@ -145,12 +166,12 @@ def register_income():
 
     # --- VALIDACIÓN SI / NO (DEUDAS) ---
     while True:
-        response = input(t("has_debts")).strip().lower()
+        debts_resp = input(t("has_debts")).strip().lower()
 
-        if response in ["si", "sí"]:
+        if debts_resp in ["si", "sí"]:
             has_debts = True
             break
-        elif response == "no":
+        elif debts_resp == "no":
             has_debts = False
             break
         else:
@@ -158,7 +179,7 @@ def register_income():
 
     # --- VALIDACIÓN SI / NO (DIEZMO) ---
     while True:
-        tithe_resp = input(t("pay_tithe_question")).strip().lower()
+        tithe_resp = input(t("pay_tithe")).strip().lower()
 
         if tithe_resp in ["si", "sí"]:
             pay_tithe = True
@@ -171,7 +192,7 @@ def register_income():
 
 
     # --- DISTRIBUCIÓN BASE ---
-    distribution = calculator.distribuir_ingreso(
+    distribution = calculator.distribute_income(
         amount,
         has_debts,
         pay_tithe
@@ -190,7 +211,7 @@ def register_income():
     # --- GUARDAR INGRESO DETALLADO ---
     data["income"].append({
         "fecha": datetime.now().isoformat(),
-        "monto": amount,
+        "amount": amount,
         "tiene_deudas": has_debts,
         "distribucion": distribution
     })
@@ -217,9 +238,7 @@ def register_income():
     print(t(f"general_saving_label ${general_saving:,.0f}"))
 
     print(t(f"net_payment_label ${distribution['available_payment']:,.0f}"))
-    print(t(f"expenses_label ${distribution['chart_expenses']:,.0f}"))
-
-
+    print(t("expenses_label"), f"${distribution['expenses']:,.0f}")
 
 
 
@@ -229,25 +248,26 @@ def register_income():
 
 
 def register_expense():
-
     data = load_data()
 
-    if not data["open"]:
-        print(t("month_closed"))
+    if not data.get("open", True):
+        print(t("period_closed"))
         return
 
+
     print(t("expense_categories_title"))
+
     for i, category in enumerate(EXPENSE_CATEGORIES, start=1):
-        print(t(f"{i:<2} {category}"))
+        print(f"{i:<2} {t(category)}")
 
 
     try:
         option = int(input(t("select_category")))
         if option < 1 or option > len(EXPENSE_CATEGORIES):
-            print(t("❌ Opción inválida"))
+            print(t("invalid_option"))
             return
         category = EXPENSE_CATEGORIES[option - 1]
-    except ValueError:
+    except ValueError:  
         print(t("must_enter_number"))
         return
 
@@ -262,19 +282,21 @@ def register_expense():
         except ValueError:
             print(t("invalid_number"))
 
-    if amount > data["summary"]["chart_expenses"]:
-        print(t("insufficient_budget"))
-        return
-
+    
     data["expenses"].append({
-        "categoria": category,
-        "monto": amount
+    "categoria": category,
+    "amount": amount
     })
 
-    data["summary"]["chart_expenses"] -= amount
     save_data(data)
 
-    print(t(f"✅ Gasto registrado en '{category}' por ${amount:,.0f}"))
+    print(t("expense.saved").format(
+    category=t(category),
+    amount=amount
+    ))
+
+
+
 
 
 def create_goal():
@@ -284,15 +306,15 @@ def create_goal():
     target_amount = float(input(t("goal_target_amount")))
 
     goal = {
-        "nombre": name,
-        "objetivo": target_amount,
-        "ahorrado": 0
+        "name": name,
+        "aim": target_amount,
+        "saved": 0
     }
 
     data["goals"].append(goal)
     save_data(data)
 
-    print(t(f"🎯 Meta '{name}' creada con objetivo ${target_amount:,.0f}"))
+    print(t("goal.created").format(name=name, target_amount=target_amount))
 
 
 def contribute_goal():
@@ -304,7 +326,8 @@ def contribute_goal():
 
     print(t("goals_title"))
     for i, goal in enumerate(data["goals"], start=1):
-        print(t(f"{i}. {goal['nombre']} (${goal['ahorrado']:,.0f} / ${goal['objetivo']:,.0f})"))
+        print(t("goal.progress").format(index=i, name=goal["name"], saved=goal["saved"], target=goal["aim"]))
+
 
     try:
         option = int(input(t("select_goal")))
@@ -330,7 +353,7 @@ def contribute_goal():
 
     index = option - 1
     data["savings"]["total"] -= amount
-    data["goals"][index]["ahorrado"] += amount
+    data["goals"][index]["saved"] += amount
 
     save_data(data)
     print(t("contribution_success"))
@@ -346,7 +369,7 @@ def expense_chart():
     categories = {}
     for expense in data["expenses"]:
         cat = expense["categoria"]
-        categories[cat] = categories.get(cat, 0) + expense["monto"]
+        categories[cat] = categories.get(cat, 0) + expense["amount"]
 
     names = list(categories.keys())
     values = list(categories.values())
@@ -368,9 +391,9 @@ def goals_chart():
         print(t("no_goals_registered"))
         return
 
-    names = [goal["nombre"] for goal in data["goals"]]
+    names = [goal["name"] for goal in data["goals"]]
     percentages = [
-        (goal["ahorrado"] / goal["objetivo"]) * 100
+        (goal["saved"] / goal["aim"]) * 100
         for goal in data["goals"]
     ]
 
@@ -389,8 +412,8 @@ def financial_report():
 
     print(t("financial_report_title"))
 
-    total_income = sum(i["monto"] for i in data["income"])
-    total_expenses = sum(e["monto"] for e in data["expenses"])
+    total_income = sum(i.get("amount", 0) for i in data.get("income", []))
+    total_expenses = sum(e.get("amount", 0) for e in data.get("expenses", []))
 
     print(t(f"total_income ${total_income:,.0f}"))
     print(t(f"total_expenses  ${total_expenses:,.0f}"))
@@ -399,9 +422,17 @@ def financial_report():
     print(f"{t('balance')} ${balance:,.0f}")
 
     print(t("savings_title"))
-    print(t(f"emergency_savings ${data['summary']['emergency_saving']:,.0f}"))
-    print(t(f"general_savings ${data['summary']['general_saving']:,.0f}"))
-    print(t(f"total_savings ${data['summary']['total_savings']:,.0f}"))
+
+    emergency = data.get("summary", {}).get("emergency_saving", 0)
+    print(t("emergency_savings").format(amount=emergency))
+
+    general = data.get("summary", {}).get("general_saving", 0)
+    print(t("general_savings").format(amount=general))
+
+
+    total = data.get("summary", {}).get("total_saving", 0)
+    print(t("total_savings").format(amount=total))
+
 
 
 def check_month_close(data):
@@ -419,7 +450,7 @@ def check_month_close(data):
             "tithe": 0,
             "my_payment": 0,
             "debts": 0,
-            "chart_expenses": 0,
+            "expenses": 0,
             "emergency_saving": 0,
             "general_saving": 0,
             "available_payment": 0
@@ -440,7 +471,7 @@ def check_month_close(data):
             "tithe": 0,
             "my_payment": 0,
             "debts": 0,
-            "chart_expenses": 0,
+            "expenses": 0,
             "emergency_saving": 0,
             "general_saving": 0,
             "available_payment": 0
@@ -457,8 +488,8 @@ def check_month_close(data):
 def register_adjustment():
     data = load_data()
 
-    if not data["open"]:
-        print(t("adjustment_not_allowed"))
+    if not data.get("open", True):
+        print(t("period_closed"))
         return
 
     description = input(t("adjustment_description"))
@@ -467,10 +498,10 @@ def register_adjustment():
     data["adjustments"].append({
         "fecha": datetime.now().isoformat(),
         "descripcion": description,
-        "monto": amount
+        "amount": amount
     })
 
-    data["summary"]["chart_expenses"] += amount
+    data["summary"]["expenses"] += amount
     save_data(data)
 
     print(t("adjustment_saved"))
@@ -503,8 +534,8 @@ def register_income_from_ui(amount, has_debts, pay_tithe):
 
     for key in [
         "chart_income",
-        "chart_expenses",
-        "total_savings",
+        "expenses",
+        "total_saving",
         "tithe",
         "debts",
         "my_payment",
@@ -521,7 +552,7 @@ def register_income_from_ui(amount, has_debts, pay_tithe):
     income = float(amount)
 
     # ─── Distribución base desde calculadora ───
-    distribution = calculator.distribuir_ingreso(
+    distribution = calculator.distribute_income(
         income,
         has_debts,
         pay_tithe
@@ -537,7 +568,7 @@ def register_income_from_ui(amount, has_debts, pay_tithe):
 
     distribution["emergency_saving"] = emergency_saving
     distribution["general_saving"] = general_saving
-    distribution["total_savings"] = total_saving
+    distribution["total_saving"] = total_saving
     distribution["available_payment"] = my_payment - total_saving
 
     # ─── ✅ CORRECCIÓN CLAVE: GASTOS CORRECTOS ───
@@ -545,12 +576,12 @@ def register_income_from_ui(amount, has_debts, pay_tithe):
     debts = distribution.get("debts", 0)
 
     expenses = income - tithe - debts - my_payment
-    distribution["chart_expenses"] = expenses
+    distribution["expenses"] = expenses
 
     # ─── Guardar ingreso ───
     data["income"].append({
         "fecha": datetime.now().isoformat(),
-        "monto": income,
+        "amount": income,
         "tiene_deudas": has_debts,
         "distribucion": distribution
     })
@@ -559,19 +590,19 @@ def register_income_from_ui(amount, has_debts, pay_tithe):
     data["summary"]["chart_income"] += income
     data["summary"]["tithe"] += tithe
     data["summary"]["debts"] += debts
-    data["summary"]["chart_expenses"] += expenses
+    data["summary"]["expenses"] += expenses
     data["summary"]["my_payment"] += my_payment
     data["summary"]["emergency_saving"] += emergency_saving
     data["summary"]["general_saving"] += general_saving
 
-    data["summary"]["total_savings"] = (
+    data["summary"]["total_saving"] = (
         data["summary"]["emergency_saving"] +
         data["summary"]["general_saving"]
     )
 
     data["summary"]["available_payment"] = (
         data["summary"]["my_payment"] -
-        data["summary"]["total_savings"]
+        data["summary"]["total_saving"]
     )
 
     save_data(data)
@@ -581,15 +612,16 @@ def register_income_from_ui(amount, has_debts, pay_tithe):
 def register_expense_from_ui(amount, category):
     data = load_data()
 
-    if data["summary"]["chart_expenses"] < amount:
-        return False
+    if not data.get("open", True):
+        print(t("period_closed"))
+        return
 
     data["expenses"].append({
-        "monto": amount,
+        "amount": amount,
         "categoria": category
     })
 
-    data["summary"]["chart_expenses"] -= amount
+    data["summary"]["expenses"] -= amount
 
     save_data(data)
     return True
@@ -607,11 +639,11 @@ def get_monthly_report():
     report = {
         "tithe": summary.get("tithe", 0),
         "debts": summary.get("debts", 0),
-        "chart_expenses": summary.get("chart_expenses", 0),
+        "expenses": summary.get("expenses", 0),
         "my_payment": summary.get("my_payment", 0),
         "emergency_saving": summary.get("emergency_saving", 0),
         "general_saving": summary.get("general_saving", 0),
-        "total_savings": summary.get("total_savings", 0),
+        "total_saving": summary.get("total_saving", 0),
         "available_payment": summary.get("available_payment", 0),
     }
 
@@ -644,7 +676,7 @@ def monthly_comparison_chart():
             summary.get("tithe", 0) +
             summary.get("debts", 0)
         )
-        expenses.append(summary.get("chart_expenses", 0))
+        expenses.append(summary.get("expenses", 0))
         savings.append(
             summary.get("emergency_saving", 0) +
             summary.get("general_saving", 0)
@@ -652,7 +684,7 @@ def monthly_comparison_chart():
 
     plt.figure()
     plt.plot(months, incomes, label="chart_income")
-    plt.plot(months, expenses, label="chart_expenses")
+    plt.plot(months, expenses, label="expenses")
     plt.plot(months, savings, label="chart_savings")
 
     plt.title("chart_monthly_comparison_title")
@@ -718,10 +750,10 @@ def financial_analysis():
 
     messages = []
 
-    if current.get("chart_expenses", 0) > previous.get("chart_expenses", 0):
+    if current.get("expenses", 0) > previous.get("expenses", 0):
         messages.append("analysis_higher_expenses")
 
-    if current.get("total_savings", 0) < previous.get("total_savings", 0):
+    if current.get("total_saving", 0) < previous.get("total_saving", 0):
         messages.append("analysis_savings_decreased")
 
     if not messages:
@@ -780,7 +812,7 @@ def main_menu():
             break
 
         else:
-            print(t("❌ Opción inválida"))
+            print(t("invalid_option"))
 
 
 def get_history_for_chart():
@@ -794,8 +826,8 @@ def analyze_alerts():
 
     summary = data.get("summary", {})
     income = summary.get("my_payment", 0)
-    expenses = summary.get("chart_expenses", 0)
-    total_saving = summary.get("total_savings", 0)
+    expenses = summary.get("expenses", 0)
+    total_saving = summary.get("total_saving", 0)
 
     if income > 0:
         if expenses > income * rules.RULES["max_expense_pct"]:
@@ -817,4 +849,5 @@ def analyze_alerts():
 
 
 if __name__ == "__main__":
-    main_menu()
+    run()
+
