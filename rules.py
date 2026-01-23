@@ -1,29 +1,32 @@
+# rules.py
+
 RULES = {
-    "max_gastos_pct": 0.6,     # 60% del ingreso
-    "min_ahorro_pct": 0.1,     # 10% mínimo
-    "alerta_ocio_pct": 0.2     # +20% vs mes anterior
+    # Gastos no deberían superar el 60% del ingreso total
+    "max_expense_pct": 0.60,
+
+    # Ahorro mínimo esperado (Regla de Babilonia – 10%)
+    "min_saving_pct": 0.10,
+
+    # Alerta si el gasto de ocio sube más del 20% vs mes anterior
+    "alerta_ocio_pct": 0.20,
 }
 
 
-RULES_NO_DEBT = {
-    "diezmo": 0.10,
-    "mi_pago": 0.10,
-    "gastos": 0.80
-}
+DEBT_CATEGORY_KEY = "DEUDAS"
 
-RULES_WITH_DEBT = {
-    "diezmo": 0.10,
-    "mi_pago": 0.10,
-    "deudas": 0.10,
-    "gastos": 0.70
-}
+EXPENSE_CATEGORIES = [
+    "ALIMENTACION",
+    "DEUDAS",
+    "OCIO",
+]
 
+# Categorías de gasto (solo informativas / reportes)
 EXPENSE_CATEGORIES = [
     "Alimentación",
     "Hijas",
     "Combustible",
-    "Vehiculo",
-    "Servicios Publicos",
+    "Vehículo",
+    "Servicios Públicos",
     "Educación",
     "Aportes sociales",
     "Proyecto productivo",
@@ -31,5 +34,6 @@ EXPENSE_CATEGORIES = [
     "Ocio",
     "Otros"
 ]
+
 
 

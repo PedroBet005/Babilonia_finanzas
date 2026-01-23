@@ -30,13 +30,9 @@ MESSAGES = {
 
     "income_distribution_title": "\n📊 INCOME DISTRIBUTION",
     "tithe_label": "Tithe:",
-    "gross_payment_label": "My payment:",
     "debts_label": "Debts:",
+    "savings_babylon_label": "Savings (Babylon rule – 10%):",
     "expenses_label": "Expenses:",
-    "emergency_saving_label": "Emergency savings:",
-    "general_saving_label": "General savings:",
-    "net_payment_label": "Net payment:",
-
 
 
 
@@ -110,7 +106,7 @@ MESSAGES = {
     "app_title_with_mode": "🏛️ BABYLON FINANCES",
     
 
-    "menu_register_income": "1. Register income",
+    "menu_register_income_from_ui": "1. Register income",
     "menu_register_expense": "2. Register expense",
     "menu_create_goal": "3. Create financial goal",
     "menu_contribute_goal": "4. Contribute to goal",
@@ -134,13 +130,24 @@ MESSAGES = {
     # *********************************************************************
 
 
-    "general_saving": "General saving",
+    "chart_expenses": "Expense chart",
+    "general_saving": "General savings",
+    "backups_label": "Backups:",
+    "total_income_label": "Total income:",
+
+
+    "ALIMENTACION": "Food",
+    "DEUDAS": "Debts",
+
 
 
     #***************************************************************
 
     "save_ok": "SAVE OK" ,
-    "save_error": "ERROR SAVING: "
+    "save_error": "ERROR SAVING: ",
+    
+
+
 
 
 

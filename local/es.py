@@ -7,7 +7,7 @@ MESSAGES = {
     "category_transport": "Transporte",
     "category_housing": "Vivienda",
     "category_services": "Servicios",
-    "category_education": "Educación",
+    "category_education": "Educación",  
     "category_health": "Salud",
     "category_leisure": "Ocio",
     "category_other": "Otros",
@@ -29,14 +29,11 @@ MESSAGES = {
     "invalid_yes_no": "❌ Respuesta inválida. Escriba únicamente: si o no.",
     "pay_tithe": "¿Desea pagar diezmo? (si/no):\n ",
 
-    "income_distribution_title": "\n📊 DISTRIBUCIÓN DEL INGRESO",
+    "distribution_title": "📊 DISTRIBUCIÓN DEL INGRESO",
     "tithe_label": "Diezmo:",
-    "gross_payment_label": "Mi pago:",
     "debts_label": "Deudas:",
+    "savings_babylon_label": "Ahorro (regla de Babilonia – 10%):",
     "expenses_label": "Gastos:",
-    "emergency_saving_label": "Ahorro de emergencia:",
-    "general_saving_label": "Ahorro general:",
-    "net_payment_label": "Mi pago neto:",
 
 
 
@@ -107,7 +104,7 @@ MESSAGES = {
     "app_title_with_mode": "🏛️ FINANZAS DE BABILONIA",
     
 
-    "menu_register_income": "1. Registrar ingreso",
+    "menu_register_income_from_ui": "1. Registrar ingreso",
     "menu_register_expense": "2. Registrar gasto",
     "menu_create_goal": "3. Crear meta financiera",
     "menu_contribute_goal": "4. Aportar a meta",
@@ -135,6 +132,12 @@ MESSAGES = {
 
     "chart_expenses": "Gastos gráficos",
     "general_saving": "Ahorro general",
+    "backups_label": "Respaldos:",
+    "total_income_label": "Ingreso total:",
+
+
+    "ALIMENTACION": "Alimentación",
+    "DEUDAS": "Deudas",
 
 
 
