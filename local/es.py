@@ -4,13 +4,17 @@ MESSAGES = {
 
 
     "category_food": "Alimentación",
-    "category_transport": "Transporte",
-    "category_housing": "Vivienda",
-    "category_services": "Servicios",
-    "category_education": "Educación",  
-    "category_health": "Salud",
+    "category_children": "Hijas",
+    "category_fuel": "Combustible",
+    "category_vehicle": "Vehículo",
+    "category_utilities": "Servicios públicos",
+    "category_operational_expenses": "Gastos operativos",
+    "category_productive_project": "Proyecto productivo",
+    "category_social_contributions": "Aportes sociales",
+    "category_agreements": "Convenios",
     "category_leisure": "Ocio",
     "category_other": "Otros",
+
 
 
 
@@ -138,6 +142,15 @@ MESSAGES = {
 
     "ALIMENTACION": "Alimentación",
     "DEUDAS": "Deudas",
+
+
+
+    "enter_expense_name": "📝 Ingrese el nombre del gasto: ",
+    "expense_name_required": "⚠️ El nombre del gasto no puede estar vacío: ",
+    "expense_saved_named": "Gasto '{name}' registrado por ${amount:.2f}",
+
+    "balance_label": "Balance",
+    "expenses_title": "📋 Detalle de gastos",
 
 
 

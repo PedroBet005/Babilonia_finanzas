@@ -41,16 +41,46 @@ LOG_PATH = os.path.join(APP_DIR, "log.txt")
 TEST_MODE = False  # 🔁 Cambiar a False cuando uses datos reales
 
 
+
 EXPENSE_CATEGORIES = [
-    "category_food",
-    "category_transport",
-    "category_housing",
-    "category_services",
-    "category_education",
-    "category_health",
-    "category_leisure",
-    "category_other"
+    "food",                    # Alimentación
+    "children",                # Hijas
+    "fuel",                    # Combustible
+    "vehicle",                 # Vehículo
+    "utilities",               # Servicios públicos
+    "operational_expenses",    # Gastos operativos
+    "productive_project",      # Proyecto productivo
+    "social_contributions",    # Aportes sociales
+    "agreements",              # Convenios
+    "leisure",                 # Ocio
+    "other"                    # Otros
 ]
+
+
+
+
+
+def normalize_expense_categories():
+    data = load_data()
+    expenses = data.get("expenses", [])
+
+    mapping = {
+        "transport": "fuel",        # o utilities según tu lógica
+        "food": "food",
+        "other": "other"
+    }
+
+    for e in expenses:
+        cat = e.get("category")
+        if isinstance(cat, str):
+            cat = cat.lower().replace("category_", "")
+            if cat in mapping:
+                e["category"] = mapping[cat]
+
+    save_data(data)
+
+
+
 
 
 
@@ -155,8 +185,9 @@ def register_expense():
     # --- Mostrar categorías traducidas ---
     print(t("expense_categories_title"))
     for i, category_key in enumerate(EXPENSE_CATEGORIES, start=1):
-        print(f"{i:<2} {t(category_key)}")
+        print(f"{i:<2} {t(f'category_{category_key}')}")
 
+    # --- Selección de categoría ---
     try:
         option = int(input(t("select_category")))
         if option < 1 or option > len(EXPENSE_CATEGORIES):
@@ -166,6 +197,13 @@ def register_expense():
     except ValueError:
         print(t("must_enter_number"))
         return
+
+    # --- Nombre del gasto SOLO para "other" ---
+    expense_name = None
+    if category == "other":
+        expense_name = input(t("enter_expense_name")).strip()
+        while not expense_name:
+            expense_name = input(t("expense_name_required")).strip()
 
     # --- Ingreso de monto ---
     while True:
@@ -178,24 +216,29 @@ def register_expense():
         except ValueError:
             print(t("invalid_number"))
 
-    # --- Educa sin castigar: bloquear deudas de consumo ---
-    if category == "category_debts":
-        print(t("alert_no_new_debts"))
-        print(t("educational_tip_debts"))
-        return  # No se registra gasto de deuda de consumo
-
+    # --- Registrar gasto ---
     data.setdefault("expenses", [])
     data["expenses"].append({
-        "categoria": category,
-        "amount": amount
+        "category": category,   # clave interna en inglés
+        "amount": amount,
+        "name": expense_name    # solo tiene valor si es "other"
     })
 
     save_data(data)
 
-    print(t("expense.saved").format(
-        category=t(category),
-        amount=amount
-    ))
+    # --- Confirmación ---
+    if expense_name:
+        print(t("expense_saved_named").format(
+            name=expense_name,
+            amount=amount
+        ))
+    else:
+        print(t("expense_saved").format(
+            category=t(f"category_{category}"),
+            amount=amount
+        ))
+
+
 
 
 
@@ -266,7 +309,7 @@ def expense_chart():
         print(t("no_expenses"))
         return
 
-    categories = {}
+    categories = {} 
     for expense in data["expenses"]:
         cat = expense["categoria"]
         categories[cat] = categories.get(cat, 0) + expense["amount"]
@@ -334,6 +377,57 @@ def financial_report():
     balance = total_income - (tithe + debts + savings + expenses)
 
     print(f"{t('balance_label')} ${balance:,.0f}")
+
+
+
+
+def list_expenses():
+    data = load_data()
+    expenses = data.get("expenses", [])
+
+    if not expenses:
+        print(t("no_expenses"))
+        return
+
+    print(t("expenses_title"))
+
+    for expense in expenses:
+        amount = expense.get("amount", 0)
+        name = expense.get("name")
+
+        raw_category = expense.get("category") or expense.get("categoria")
+        label = None
+
+        # 1️⃣ Nombre personalizado (Otros)
+        if name:
+            label = name
+
+        # 2️⃣ Categoría
+        elif isinstance(raw_category, str):
+            category = raw_category.strip().lower()
+
+            # limpiar prefijos viejos
+            if category.startswith("category_"):
+                category = category.replace("category_", "")
+
+            # intentar traducción
+            key = "category_" + category
+            translated = t(key)
+
+            # si no existe traducción → NO mostrar inglés
+            if translated != key:
+                label = translated
+            else:
+                label = t("category_other")
+
+        # 3️⃣ Respaldo final
+        if not label:
+            label = t("category_other")
+
+        print(f"- {label}: ${amount:,.0f}")
+
+
+
 
 
 
@@ -721,6 +815,9 @@ def main_menu():
 
         elif option == "5":
             financial_report()
+            print("")  # separación visual
+            list_expenses()
+
 
         elif option == "6":
             expense_chart()
@@ -784,4 +881,5 @@ def analyze_alerts():
 
 if __name__ == "__main__":
     run()
+
 

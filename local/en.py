@@ -5,13 +5,17 @@ MESSAGES = {
 
 
     "category_food": "Food",
-    "category_transport": "Transportation",
-    "category_housing": "Housing",
-    "category_services": "Utilities",
-    "category_education": "Education",
-    "category_health": "Health",
+    "category_children": "Children",
+    "category_fuel": "Fuel",
+    "category_vehicle": "Vehicle",
+    "category_utilities": "Public utilities",
+    "category_operational_expenses": "Operational expenses",
+    "category_productive_project": "Productive project",
+    "category_social_contributions": "Social contributions",
+    "category_agreements": "Agreements",
     "category_leisure": "Leisure",
     "category_other": "Other",
+
 
 
     # --- print/input
@@ -138,6 +142,17 @@ MESSAGES = {
 
     "ALIMENTACION": "Food",
     "DEUDAS": "Debts",
+
+
+
+
+    "enter_expense_name": "📝 Enter expense name: ",
+    "expense_name_required": "⚠️ Expense name cannot be empty: ",
+    "expense_saved_named": "Expense '{name}' saved for ${amount:.2f}",
+
+
+    "balance_label": "Balance",
+    "expenses_title": "📋 Expense details",
 
 
 
