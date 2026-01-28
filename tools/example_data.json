@@ -1,0 +1,14 @@
+{
+  "password_hash": "",
+  "abierto": false,
+  "ingresos": [],
+  "gastos": [],
+  "ahorros": {
+    "total": 0
+  },
+  "deudas": [],
+  "configuracion": {
+    "moneda": "COP",
+    "idioma": "es"
+  }
+}

@@ -17,6 +17,68 @@ MESSAGES = {
 
 
 
+    # NUEVOS CAMBIOS
+
+    "menu_create_goal": "3. Crear propósito del oro",
+    "goal_name": "Nombre del propósito del oro: ",
+    "goal_target_amount": "Oro objetivo: ",
+    "goal_created": "🎯 Propósito del oro creado correctamente",
+
+
+    "savings_babylon_label": "Tesoro personal (regla de Babilonia – 10%):",
+    "savings_title": "\n💰 TESORO PERSONAL",
+    "general_savings": "Tesoro general: ${amount:,.0f}",
+    "total_savings": "Tesoro total: ${amount:,.0f}",
+
+    "financial_report_title": "\n📊 VIGILANCIA DEL TESORO",
+    "menu_view_report": "5. Vigilar el tesoro",
+
+
+    "menu_title": "🏛️ FINANZAS DE BABILONIA",
+    "subtitle": "La riqueza crece donde el oro es guiado con sabiduría",
+
+    "wallet": "🏺 Mi Bolsa",
+    "income": "💰 Recibir oro",
+    "expense": "📤 Gastar con juicio",
+    "balance": "⚖️ Ver estado del oro",
+
+    "treasure": "💰 Tesoro Personal",
+    "pay_first": "Pagarme primero (10%)",
+    "savings": "Ver tesoro acumulado",
+    "history": "Crónicas del oro",
+
+    "purposes": "🎯 Propósitos del Oro",
+    "create_goal": "Crear propósito",
+    "add_goal": "Aportar al propósito",
+    "progress": "Ver progreso del oro",
+    "goal_chart": "Evolución del tesoro",
+
+    "watch": "📊 Vigilancia del Oro",
+    "report": "Estado del tesoro",
+    "expense_chart": "Flujo de gastos",
+    "goal_chart_2": "Crecimiento del oro",
+
+    "wisdom": "📜 Sabiduría",
+    "principles": "Principios de Babilonia",
+    "tips": "Consejo del día",
+
+    "settings": "⚙️ Gobierno del Tesoro",
+    "backup": "Respaldos",
+    "reset": "Reiniciar datos",
+    "exit": "Salir del templo",
+
+
+
+    "error": "Error",
+    "must_enter_amount": "Debe ingresar un monto",
+    "success": "Éxito",
+    "expense_saved": "Gasto registrado correctamente",
+
+    "menu_register_income": "Registrar ingreso",
+    "menu_register_expense": "Registrar gasto",
+    "menu_view_report": "Ver reporte",
+    "menu_tools": "📊 Herramientas financieras",
+    "exit": "Salir",
 
 
     # --- print/input
@@ -36,7 +98,7 @@ MESSAGES = {
     "distribution_title": "📊 DISTRIBUCIÓN DEL INGRESO",
     "tithe_label": "Diezmo:",
     "debts_label": "Deudas:",
-    "savings_babylon_label": "Ahorro (regla de Babilonia – 10%):",
+    
     "expenses_label": "Gastos:",
 
 
@@ -53,9 +115,8 @@ MESSAGES = {
     "insufficient_budget": "🚨 No tienes presupuesto suficiente para este gasto.",
     "expense_registered": "✅ Gasto registrado correctamente",
 
-    "goal_name": "Nombre de la meta: ",
-    "goal_target_amount": "Monto objetivo: ",
-    "goal_created": "🎯 Meta creada correctamente",
+
+
 
     "no_goals": "❌ No hay metas creadas",
     "goals_title": "\n🎯 Metas:",
@@ -69,14 +130,12 @@ MESSAGES = {
     "no_expenses": "❌ No hay gastos registrados",
     "no_goals_registered": "❌ No hay metas registradas",
 
-    "financial_report_title": "\n📊 REPORTE FINANCIERO GENERAL",
+
     "total_income": "Ingresos totales:",
     "total_expenses": "Gastos totales:",
     "balance": "Balance:",
-    "savings_title": "\n🏦 AHORROS",
     "emergency_savings": "Ahorro de emergencia: ${amount:,.0f}",
-    "general_savings": "Ahorro general: ${amount:,.0f}",
-    "total_savings": "Ahorro total: ${amount:,.0f}",
+    
 
     "month_closed_auto": "📦 Mes cerrado automáticamente.",
 
@@ -87,7 +146,6 @@ MESSAGES = {
 
     "history_title": "\n📚 HISTORIAL FINANCIERO",
     "history_month": "\n🗓️ Mes:",
-
 
 
 
@@ -109,14 +167,13 @@ MESSAGES = {
     
 
     "menu_register_income_from_ui": "1. Registrar ingreso",
-    "menu_register_expense": "2. Registrar gasto",
-    "menu_create_goal": "3. Crear meta financiera",
-    "menu_contribute_goal": "4. Aportar a meta",
-    "menu_view_report": "5. Ver reporte financiero",
-    "menu_expense_chart": "6. Gráfica de gastos",
-    "menu_goals_chart": "7. Gráfica de metas",
-    "menu_reset_data": "8. Reiniciar datos",
-    "menu_exit": "9. Salir",
+    "menu_contribute_goal": "Aportar a meta",
+    "menu_expense_chart": "Gráfica de gastos",
+    "menu_goals_chart": "Gráfica de metas",
+    "menu_reset_data": "Reiniciar datos",
+    "menu_exit": "Salir",
+
+    "register_income": "Registrar ingreso",
 
     "select_option": "Seleccione una opción",
     "goodbye_message": "👋 Hasta pronto. Protege tu oro.",
@@ -131,7 +188,7 @@ MESSAGES = {
 
 
 
-# ****************************************************
+    # ****************************************************
 
 
     "chart_expenses": "Gastos gráficos",
@@ -154,17 +211,51 @@ MESSAGES = {
 
 
 
-# ***********************************************************************
+    # ***********************************************************************
 
 
 
     "save_ok": "GUARDADO OK ",
-    "save_error": "ERROR AL GUARDAR: "
+    "save_error": "ERROR AL GUARDAR: ",
+
+    
 
 
+    #*************************************************************************
 
 
+    #BABYLON_LABELS
+    "menu_title": "🏛️ FINANZAS DE BABILONIA",
+    "subtitle": "La riqueza crece donde el oro es guiado con sabiduría",
 
+    "wallet": "🏺 Mi Bolsa",
+    "income": "Registrar ingreso",
+    "expense": "Registrar gasto",
+    "balance": "Ver balance",
 
+    "treasure": "💰 Tesoro Personal",
+    "pay_first": "Pagarme primero (10%)",
+    "savings": "Ver ahorro acumulado",
+    "history": "Historial de aportes",
+
+    "purposes": "🎯 Propósitos del Oro",
+    "create_goal": "Crear propósito",
+    "add_goal": "Aportar al propósito",
+    "progress": "Ver progreso",
+    "goal_chart": "Gráfica de crecimiento",
+
+    "watch": "📊 Vigilancia del Oro",
+    "report": "Reporte financiero",
+    "expense_chart": "Gráfica de gastos",
+    "goal_chart_2": "Gráfica de metas",
+
+    "wisdom": "📜 Sabiduría",
+    "principles": "Principios de Babilonia",
+    "tips": "Consejo del día",
+
+    "settings": "⚙️ Gobierno del Tesoro",
+    "backup": "Respaldos",
+    "reset": "Reiniciar datos",
+    "exit": "Salir"
 
 }

@@ -7,13 +7,49 @@ from rules import EXPENSE_CATEGORIES
 import hashlib
 import os
 from i18n import set_language, t
+import locale
+
+
+
+def language_selector():
+    lang_win = tk.Tk()
+    lang_win.title("Select language")
+    lang_win.geometry("300x180")
+    lang_win.resizable(False, False)
+
+    tk.Label(
+        lang_win,
+        text="🌍 Select language / Seleccione idioma",
+        font=("Arial", 11, "bold")
+    ).pack(pady=15)
+
+    def choose(lang):
+        set_language(lang)
+        lang_win.destroy()
+        start_app()   # 👈 SOLO AQUÍ se crea la app
+
+    tk.Button(
+        lang_win,
+        text="🇪🇸 Español",
+        width=20,
+        command=lambda: choose("es")
+    ).pack(pady=5)
+
+    tk.Button(
+        lang_win,
+        text="🇺🇸 English",
+        width=20,
+        command=lambda: choose("en")
+    ).pack(pady=5)
+
+    lang_win.mainloop()
+
+
 
 
 
 def start():
-    lang = input("Choose language / Elija idioma (en/es): ").strip().lower()
-    set_language(lang)
-    main.run()
+    start_app()
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -98,6 +134,13 @@ TEXT_COLOR = "white"
 # ==============================
 def start_app():
     global app_window
+
+    # 🔄 Si la app ya existe (cambio de idioma), destruirla
+    try:
+        app_window.destroy()
+    except:
+        pass
+
     app_window = tk.Tk()
     app_window.title("🏛️ Finanzas de Babilonia")
     app_window.geometry("400x500")
@@ -107,17 +150,17 @@ def start_app():
     # --- TÍTULO ---
     title_label = tk.Label(
         app_window,
-        text="FINANZAS DE BABILONIA",
+        text=t("menu_title"),
         font=("Arial", 16, "bold"),
         bg=BG_COLOR,
         fg=PRIMARY_COLOR
     )
     title_label.pack(pady=20)
 
-    # --- TEXTO INFORMATIVO ---
+    # --- SUBTÍTULO ---
     description_label = tk.Label(
         app_window,
-        text="Aplicación de finanzas personales\nbasada en principios de Babilonia",
+        text=t("subtitle"),
         font=("Arial", 10),
         justify="center",
         bg=BG_COLOR,
@@ -125,23 +168,45 @@ def start_app():
     )
     description_label.pack(pady=10)
 
-    # --- FRAME PRINCIPAL (botones visibles) ---
-    main_frame = tk.Frame(app_window)
+    # ✅ FRAME PRINCIPAL (OBLIGATORIO antes de usarlo)
+    main_frame = tk.Frame(app_window, bg=BG_COLOR)
     main_frame.pack(pady=10)
 
-    # --- BOTONES (CON FUNCIÓN) ---
-    styled_button(main_frame, "Registrar ingreso", income_window).pack(pady=8)
-    styled_button(main_frame, "Registrar gasto", expense_window).pack(pady=8)
-    styled_button(main_frame, "Ver reporte", report_window).pack(pady=8)
+    # --- BOTONES ---
     styled_button(
         main_frame,
-        "📊 Herramientas financieras",
+        t("menu_register_income"),
+        income_window
+    ).pack(pady=8)
+
+    styled_button(
+        main_frame,
+        t("menu_register_expense"),
+        expense_window
+    ).pack(pady=8)
+
+    styled_button(
+        main_frame,
+        t("menu_view_report"),
+        report_window
+    ).pack(pady=8)
+
+    styled_button(
+        main_frame,
+        t("menu_tools"),
         tools_window,
         SECONDARY_BUTTON_COLOR
     ).pack(pady=10)
-    styled_button(app_window, "Salir", app_window.quit, EXIT_COLOR).pack(pady=30)
+
+    styled_button(
+        app_window,
+        t("exit"),
+        app_window.quit,
+        EXIT_COLOR
+    ).pack(pady=30)
 
     app_window.mainloop()
+
 
 
 def styled_button(parent, text, command, color=BUTTON_COLOR):
@@ -163,13 +228,13 @@ def tools_window():
     tools_win.configure(bg=BG_COLOR)
     tools_win.transient(app_window)      # pertenece a la ventana principal
     tools_win.grab_set()                 # bloquea la ventana principal
-    tools_win.title("📊 Herramientas financieras")
+    tools_win.title(t("watch"))
     tools_win.geometry("380x450")
     tools_win.resizable(False, False)
 
     tk.Label(
         tools_win,
-        text="Herramientas financieras",
+        text=t("watch"),
         font=("Arial", 14, "bold"),
         bg=BG_COLOR,
         fg=PRIMARY_COLOR
@@ -255,7 +320,10 @@ def income_window():
 
         try:
             if not entry_amount.get().strip():
-                messagebox.showerror("Error", "Debe ingresar un monto")
+                messagebox.showerror(
+                    t("error"),
+                    t("must_enter_amount")
+                )
                 return
 
             amount_text = entry_amount.get().strip()
@@ -269,7 +337,7 @@ def income_window():
             has_debt = debt_var.get() == "si"
             pays_tithe = tithe_var.get() == "si"
 
-            distribution = main.registrar_ingreso_desde_ui(
+            distribution = main.register_income_from_ui(
                 amount,
                 has_debt,
                 pays_tithe
@@ -381,58 +449,89 @@ def expense_window():
 
 
 def report_window():
-    # Ventana para mostrar reporte mensual
     win = tk.Toplevel()
-    win.title("📊 Reporte mensual")
+    win.title("📊 Reporte financiero")
+    win.geometry("360x450")
+    win.resizable(False, False)
+    win.configure(bg=BG_COLOR)
 
-    report = main.obtener_reporte_mensual()
-    month_status = "Abierto" if main.obtener_estado_mes() else "Cerrado"
+    data = main.load_data()
+    incomes = data.get("income", [])
+    expenses = data.get("expenses", [])
 
-    if not report:
-        tk.Label(
-            win,
-            text="No hay datos disponibles para mostrar.",
-            fg="red"
-        ).pack(pady=10)
-        return
+    # --- CÁLCULOS ---
+    tithe = sum(i["distribucion"].get("tithe", 0) for i in incomes)
+    debts = sum(i["distribucion"].get("debts", 0) for i in incomes)
+    savings = sum(i["distribucion"].get("savings", 0) for i in incomes)
 
+    # 💼 Gastos asignados desde ingresos
+    expenses_assigned = sum(
+        i["distribucion"].get("expenses", 0) for i in incomes
+    )
+
+    # 🧾 Gastos reales registrados
+    expenses_used = sum(e.get("amount", 0) for e in expenses)
+
+    # 💰 Disponible para gastar
+    expenses_available = expenses_assigned - expenses_used
+
+    # --- TÍTULO ---
     tk.Label(
         win,
-        text=f"Mes abierto o cerrado: {month_status}",
-        font=("Arial", 10, "italic")
-    ).pack(pady=5)
+        text="📊 REPORTE FINANCIERO",
+        font=("Arial", 14, "bold"),
+        bg=BG_COLOR,
+        fg=PRIMARY_COLOR
+    ).pack(pady=15)
 
-    # ─── Orden correcto del reporte ───
-    report_order = [
-        "Diezmo",
-        "Mi pago",
-        "Mi pago disponible",
-        "Ahorro emergencia",
-        "Ahorro general",
-        "Ahorro total",
-        "Deudas",
-        "Gastos"
-    ]
+    def report_line(label, value):
+        frame = tk.Frame(win, bg=BG_COLOR)
+        frame.pack(fill="x", padx=25, pady=4)
 
-    for key in report_order:
-        value = report.get(key, 0)
         tk.Label(
-            win,
-            text=f"{key}: ${value:,.0f}",
-            anchor="w"
-        ).pack(fill="x")
+            frame,
+            text=label,
+            font=("Arial", 11),
+            bg=BG_COLOR,
+            fg=PRIMARY_COLOR
+        ).pack(side="left")
 
-    tk.Button(
+        tk.Label(
+            frame,
+            text=f"${value:,.0f}",
+            font=("Arial", 11, "bold"),
+            bg=BG_COLOR,
+            fg=PRIMARY_COLOR
+        ).pack(side="right")
+
+    # --- MOSTRAR ---
+    report_line("Diezmo:", tithe)
+    report_line("Deudas:", debts)
+    report_line("Ahorro (regla de Babilonia – 10%):", savings)
+    report_line("Gastos disponibles:", expenses_available)
+
+    ttk.Separator(win, orient="horizontal").pack(
+        fill="x", padx=20, pady=15
+    )
+
+    styled_button(
         win,
-        text="Cerrar",
-        command=win.destroy
+        "🛠️ Herramientas financieras",
+        tools_window,
+        SECONDARY_BUTTON_COLOR
+    ).pack(pady=8)
+
+    styled_button(
+        win,
+        "Salir",
+        win.destroy,
+        EXIT_COLOR
     ).pack(pady=10)
 
 
 
 
-def history_window():    
-    # Ventana para mostrar historial mensual
+def history_window():
     win = tk.Toplevel()
     win.title("📚 Historial mensual")
     win.transient()
@@ -453,25 +552,44 @@ def history_window():
             text="📭 No hay meses cerrados aún",
             font=("Arial", 11, "italic")
         ).pack(pady=10)
-
         win.after(0, lambda: win.grab_release())
         return
 
     for month in history:
+
+        # 🟢 CASO 1: month es STRING → "2026-01"
+        if isinstance(month, str):
+            tk.Label(
+                win,
+                text=f"🗓️ {month}",
+                font=("Arial", 11, "bold")
+            ).pack(pady=5)
+            continue
+
+        # 🟢 CASO 2: month es DICT
+        mes = month.get("mes", "Mes desconocido")
+
         tk.Label(
             win,
-            text=f"🗓️ {month['mes']}",
+            text=f"🗓️ {mes}",
             font=("Arial", 11, "bold")
         ).pack(pady=5)
 
-        for key, value in month["resumen"].items():
-            tk.Label(win, text=f"  {key}: ${value:,.0f}").pack(anchor="w")
+        resumen = month.get("resumen", {})
+
+        for key, value in resumen.items():
+            tk.Label(
+                win,
+                text=f"  {key}: ${value:,.0f}",
+                anchor="w"
+            ).pack(anchor="w")
+
 
 
 def comparison_window():
     # Ventana para comparar meses
     try:
-        ok = main.grafica_comparacion_mensual()
+        ok = main.monthly_comparison_chart()
 
         if not ok:
             messagebox.showinfo(
@@ -487,48 +605,79 @@ def comparison_window():
 
 
 def monthly_chart_window():
-    # Ventana para mostrar gráfica mensual
-    history = main.obtener_historial_para_grafica()
+    history = main.get_history()
 
-    if len(history) < 2:
+    # 🔒 Validación real
+    if not isinstance(history, list) or len(history) < 2:
         messagebox.showinfo(
-            "Gráfica",
-            "Se necesitan al menos 2 meses cerrados para mostrar la gráfica"
-        )
+        "Gráfica mensual",
+        "Se necesitan al menos 2 meses cerrados para mostrar la gráfica"
+    )
+        
         return
 
-    months = [m["mes"] for m in history]
-    expenses = [m["resumen"].get("Gastos", 0) for m in history]
-    savings = [m["resumen"].get("Ahorro total", 0) for m in history]
+    try:
+        months = []
+        tithe = []
+        debts = []
+        savings = []
+        expenses = []
 
-    plt.figure()
-    plt.plot(months, expenses, label="Gastos")
-    plt.plot(months, savings, label="Ahorro total")
-    plt.title("Evolución financiera mensual")
-    plt.xlabel("Mes")
-    plt.ylabel("Monto ($)")
-    plt.legend()
+        for m in history:
+            # 🔐 Blindaje
+            if not isinstance(m, dict):
+                continue
 
-    plt.gcf().canvas.manager.window.attributes('-topmost', 1)
-    plt.gcf().canvas.manager.window.attributes('-topmost', 0)
+            month_label = m.get("month", "Mes desconocido")
+            summary = m.get("summary", {})
 
-    plt.show()
+            months.append(month_label)
+            tithe.append(summary.get("tithe", 0))
+            debts.append(summary.get("debts", 0))
+            savings.append(summary.get("savings", 0))
+            expenses.append(summary.get("expenses", 0))
+
+        if len(months) < 2:
+            raise ValueError("Historial insuficiente")
+
+        import matplotlib.pyplot as plt
+
+        plt.figure()
+        plt.plot(months, tithe, label="Diezmo")
+        plt.plot(months, debts, label="Deudas")
+        plt.plot(months, savings, label="Ahorro (Babilonia 10%)")
+        plt.plot(months, expenses, label="Gastos")
+
+        plt.title("Comparación mensual")
+        plt.xlabel("Mes")
+        plt.ylabel("Monto")
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+    except Exception as e:
+        messagebox.showerror(
+            "Error",
+            f"Ocurrió un problema al generar la gráfica:\n{e}",
+            parent=tools_window
+        )
 
 
 def export_csv():
     # Exportar historial a CSV
     if main.exportar_historial_csv():
         messagebox.showinfo(
-            "CSV",
-            "Historial exportado correctamente",
-            parent=tools_window
-        )
+        "CSV",
+        "No hay historial"
+    )
+
     else:
         messagebox.showwarning(
-            "CSV",
-            "No hay historial para exportar",
-            parent=tools_window
-        )
+        "CSV",
+        "No hay historial para exportar"
+    )
+
 
 
 def analysis_window():
@@ -537,9 +686,9 @@ def analysis_window():
 
     messagebox.showinfo(
         "🧠 Análisis financiero",
-        message,
-        parent=tools_window
+        message
     )
+
 
 
 def alerts_window():
@@ -571,4 +720,6 @@ def alerts_window():
 # ==============================
 
 if __name__ == "__main__":
-    start()
+    language_selector()
+
+
