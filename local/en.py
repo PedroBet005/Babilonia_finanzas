@@ -1,116 +1,89 @@
 MESSAGES = {
-    # ===============================
-    # GENERAL
-    # ===============================
-    "welcome": "Welcome to Babylon Finances!",
-    "app_title": "🏛️ BABYLON FINANCES",
-    "subtitle": "Wealth grows where gold is guided by wisdom",
+    "welcome": "Welcome to Babylonian Finance!",
+
+    "main_menu": "MAIN MENU",
+    "menu_income": "Register income",
+    "menu_expense": "Register expense",
+    "menu_balance": "View balance",
+    "menu_change_language": "Change language",
     "exit": "Exit",
-    "close": "Close",
-    "error": "Error",
-    "success": "Success",
 
-    # ===============================
-    # MAIN MENU
-    # ===============================
-    "menu_register_income": "Register income",
-    "menu_register_expense": "Register expense",
-    "menu_view_report": "View report",
-    "menu_tools": "🛠️ Financial tools",
+    "select_option": "Select an option",
+    "invalid_option": "Invalid option, please try again",
 
-    # ===============================
-    # EXPENSE CATEGORIES
-    # ===============================
-    "category_food": "Food",
-    "category_children": "Children",
-    "category_fuel": "Fuel",
-    "category_vehicle": "Vehicle",
-    "category_utilities": "Public utilities",
-    "category_operational_expenses": "Operational expenses",
-    "category_productive_project": "Productive project",
-    "category_social_contributions": "Social contributions",
-    "category_agreements": "Agreements",
-    "category_leisure": "Leisure",
-    "category_other": "Other",
+    "income_saved": "Income saved successfully",
+    "expense_saved": "Expense recorded successfully",
 
-    # ===============================
-    # INCOME / EXPENSES
-    # ===============================
-    "must_enter_amount": "You must enter an amount",
-    "enter_income_amount": "Enter income amount:",
-    "enter_expense_amount": "Enter expense amount:",
-    "amount_must_be_positive": "Amount must be greater than 0",
-    "expense_registered": "Expense registered successfully",
-    "insufficient_budget": "You do not have enough budget",
+    "amount_must_be_positive": "The amount must be greater than zero",
+    "period_closed": "The period is closed",
 
-    # ===============================
-    # DISTRIBUTION
-    # ===============================
-    "distribution_title": "📊 Income distribution",
-    "tithe_label": "Tithe",
-    "debts_label": "Debts",
-    "expenses_label": "Expenses",
-    "savings_babylon_label": "Savings (Babylon rule – 10%)",
+    "enter_amount": "Enter the amount",
+    "enter_source": "Income description",
 
-    # ===============================
-    # REPORTS
-    # ===============================
-    "report_title": "📊 Financial report",
-    "total_income_label": "Total income",
-    "total_expenses": "Total expenses",
-    "balance_label": "Balance",
+    "balance_title": "📊 BABYLONIAN FINANCIAL SUMMARY",
 
-    # ===============================
-    # SAVINGS
-    # ===============================
-    "savings_title": "💰 Personal treasure",
-    "general_savings": "General savings: ${amount:,.0f}",
-    "total_savings": "Total savings: ${amount:,.0f}",
-    "emergency_savings": "Emergency savings: ${amount:,.0f}",
+    "savings": "Savings (Babylon rule – 10%)",
+    "tithe": "Tithe",
+    "debts": "Debts",
+    "available": "Available for expenses",
 
-    # ===============================
-    # GOALS
-    # ===============================
-    "no_goals": "No goals created",
-    "goals_title": "🎯 Goals",
-    "goal_name": "Goal name:",
-    "goal_target_amount": "Target amount:",
-    "goal_created": "Goal created successfully",
-    "contribution_amount": "Contribution amount:",
-    "contribution_success": "Contribution completed successfully",
+    "financial_tools": "Financial tools",
+    "financial_tools_title": "FINANCIAL TOOLS",
+    "monthly_report": "Monthly gold report",
+    "period_summary": "Period summary",
+    "expenses_by_category": "Expenses by category",
+    "cash_flow": "Treasury cash flow",
+    "babylon_savings": "Babylonian savings (10%)",
+    "financial_evolution": "Financial evolution",
+    "export_reports": "Export / Print reports",
+    "back": "Back",
+    "feature_coming_soon": "Feature under development",
 
-    # ===============================
-    # HISTORY / CHARTS
-    # ===============================
-    "history_title": "📚 Financial history",
-    "history_month": "Month",
-    "not_enough_months_to_compare": "Not enough months to compare",
+    "monthly_report": "Monthly gold report",
+    "income": "Income",
+    "expense": "Expenses",
 
-    "chart_income": "Income",
-    "chart_expenses": "Expenses",
-    "chart_savings": "Savings",
-    "chart_month": "Month",
-    "chart_amount": "Amount",
+    "export_monthly_txt": "Export monthly report (TXT)",
+    "export_monthly_csv": "Export monthly report (CSV)",
+    "file_generated": "File generated successfully",
 
-    # ===============================
-    # ANALYSIS / ALERTS
-    # ===============================
-    "analysis_not_enough_data": "Not enough data for analysis",
-    "analysis_higher_expenses": "You spent more than last month",
-    "analysis_savings_decreased": "Your savings decreased",
-    "analysis_good_progress": "Good job, your finances are improving",
+    "expenses_by_category": "Expenses by category",
+    "total": "Total",
+    "no_data": "No data for this period",
+    "others": "Others",
 
-    "alert_high_expenses": "Expenses exceed 60% of income",
-    "alert_low_savings": "Savings below 10% of income",
-    "alert_leisure_increase": "Leisure spending increased significantly",
+    "export_txt": "Export to TXT",
+    "export_csv": "Export to CSV",
+    "cash_flow": "Treasury cash flow",
 
-    # ===============================
-    # SYSTEM
-    # ===============================
-    "save_ok": "Saved successfully",
-    "save_error": "Error while saving",
-    "reset_confirm": "This will delete all data. Confirm?",
-    "operation_cancelled": "Operation cancelled",
-    "data_reset_ok": "Data reset successfully",
+    "babylon_savings": "Babylonian savings (10%)",
+    "total_savings": "Total savings",
+    "monthly_savings": "Period savings",
+    "average_savings": "Average monthly savings",
+    "savings_success": "A part of everything you earn is yours. You are on the right path.",
+    "savings_warning": "Remember: a part of everything you earn should be yours.",
+    "menu_financial_evolution": "Financial evolution",
+    "financial_evolution_title": "📈 Financial wealth evolution",
+
+    "export_success": "Report exported successfully",
+    "export_error": "Error exporting report",
+
+    "financial_tools": "Financial tools",
+    "menu_export_evolution": "Export financial evolution",
+    "back": "Back",
+
+    "expenses_by_category": "Expenses by category",
+    "period": "Period",
+    "percentage": "Percentage",
+    "amount": "Amount",
+    "others": "Others",
+
 
 }
+
+
+def t(key):
+    return MESSAGES.get(key, key)
+
+
+ 

@@ -1,6 +1,8 @@
 
 import security as security
 import calculator as calculator
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from datetime import datetime
 import copy
@@ -11,7 +13,7 @@ import json
 import rules
 from i18n import t
 import sys
-
+from interfaz import init_app, show_menu, handle_change_language
 
 
 
@@ -33,13 +35,18 @@ APP_DIR = get_app_dir()
 
 def resource_path(relative_path):
     try:
-        base_path = sys._MEIPASS  # PyInstaller
+        base_path = sys._MEIPASS  # cuando es .exe
     except Exception:
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
 
+APP_DIR = os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else os.getcwd()
 
+DATA_PATH = os.path.join(APP_DIR, "datos.json")
+LOG_PATH = os.path.join(APP_DIR, "log.txt")
+
+LOG_PATH
 
 
 def main_menu():
@@ -59,8 +66,6 @@ def run():
 APP_DIR = os.path.join(os.environ["APPDATA"], "BabiloniaFinanzas")
 os.makedirs(APP_DIR, exist_ok=True)
 
-DATA_PATH = os.path.join(APP_DIR, "datos.json")
-LOG_PATH = os.path.join(APP_DIR, "log.txt")
 
 
 # ==============================
@@ -520,7 +525,9 @@ def get_history():
     data = load_data()
     return data.get("history", [])
 
-
+def log_error(msg):
+    with open(LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(msg + "\n")
 
 
 def register_income(amount: float, has_debts: bool, pay_tithe: bool):
@@ -561,7 +568,13 @@ def register_income(amount: float, has_debts: bool, pay_tithe: bool):
     data["summary"]["debts"] += distribution.get("debts", 0)
     data["summary"]["savings"] += distribution.get("savings", 0)
 
-    save_data(data)
+    # 🔐 GUARDADO SEGURO (clave para .exe)
+    try:
+        save_data(data)
+    except Exception as e:
+        log_error(str(e))
+        raise RuntimeError("error_saving")
+
     return distribution
 
 
@@ -881,13 +894,13 @@ def main_menu():
 #        debts = round(amount * 0.20)
 #       data["debts"] = safe_number(data.get("debts")) + debts
 
-    # Gastos
+# Gastos
 #    expenses = amount - tithe - saving - debts
 #   data["expenses"] = safe_number(data.get("expenses")) + expenses
 
- #   save_data(data)
+#   save_data(data)
 
-    # Resultado para mostrar en la UI
+# Resultado para mostrar en la UI
 #    distribution["Diezmo"] = tithe
 #   distribution["Ahorro"] = saving
 #  distribution["Deudas"] = debts
@@ -1020,6 +1033,14 @@ def analisis_financiero():
     return "\n".join(messages)
 
 
+def print_financial_summary(diezmo, deudas, ahorro, disponible):
+    print("\n📊 RESUMEN FINANCIERO BABILÓNICO\n")
+
+    print(f"🙏 Diezmo: {diezmo}")
+    print(f"🧾 Deudas: {deudas}")
+    print(f"🏦 Ahorro (regla de Babilonia – 10%): {ahorro}")
+    print("---------------------------------------")
+    print(f"💰 Gasto disponible: {disponible}\n")
 
 
 # ==============================
@@ -1035,8 +1056,13 @@ def grafica_comparacion_mensual():
 
 
 
+def main():
+    handle_change_language()   # 🌍 Idioma al iniciar
+    init_app()
+    show_menu()
+
 if __name__ == "__main__":
-    print("Este módulo es lógico. Use interfaz.py para ejecutar la app.")
+    main()
 
 
 
