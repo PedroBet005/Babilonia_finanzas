@@ -10,7 +10,7 @@ Aplicación de finanzas personales desarrollada en **Python**, diseñada para ay
 - Clasificación de gastos (alimentación, ocio, transporte, etc.)
 - Análisis financiero básico
 - Almacenamiento **local** de datos (no se suben datos personales a GitHub)
-- Interfaz gráfica desarrollada en **Tkinter**
+- “App financiera basada en ‘El Hombre Más Rico de Babilonia’. Evolucionó de CLI → EXE → FastAPI.”
 - Proyecto pensado para uso personal y aprendizaje práctico
 
 ---
@@ -18,7 +18,8 @@ Aplicación de finanzas personales desarrollada en **Python**, diseñada para ay
 ## 🛠️ Tecnologías usadas
 
 - Python 3
-- Tkinter
+- .EXE
+- FastAPI
 - JSON (almacenamiento local)
 - Git & GitHub
 
@@ -29,17 +30,19 @@ Aplicación de finanzas personales desarrollada en **Python**, diseñada para ay
 ```text
 babilonia_finanzas/
 │
-├── main.py               # Lógica principal
-├── interfaz.py           # Interfaz gráfica
-├── reglas.py             # Reglas financieras
-├── seguridad.py          # Manejo de seguridad
-├── calculadora.py        # Cálculos financieros
+├── core/           ← lógica (intocable)
+│   ├── income.py
+│   ├── expense.py
+│   ├── balance.py
 │
-├── datos_ejemplo.json    # Plantilla de datos (segura)
-├── .gitignore            # Protege datos reales
-├── README.md             # Documentación
+├── cli/            ← interfaz consola (.exe)
+│   └── menu.py
 │
-└── dist / build / respaldos
+├── api/            ← FastAPI
+│   └── routes.py
+│	
+├── main_cli.py     ← para .exe
+├── main_api.py     ← FastAPI
 
 
 ---
