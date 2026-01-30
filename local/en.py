@@ -77,6 +77,34 @@ MESSAGES = {
     "percentage": "Percentage",
     "amount": "Amount",
     "others": "Others",
+    "amount": "Amount",
+
+    # Confirmations
+    "income_saved": "✅ Income successfully recorded",
+    "expense_saved": "✅ Expense recorded successfully",
+    "export_success": "📄 Report generated and saved successfully",
+
+    # Informational states
+    "no_data": "ℹ️ There are no transactions recorded for this period yet",
+    "feature_coming_soon": "🚧 Feature under development. Coming soon",
+
+    # Menus
+    "select_option": "Select an option from the menu",
+    "back": "Back to the previous menu",
+
+    # Soft errors (UX friendly)
+    "invalid_option": "❌ Invalid option. Please try again",
+
+    # Headers
+    "financial_tools": "Financial tools",
+    "financial_evolution": "Financial evolution",
+
+
+    # Financial tools – Exports
+    "export_financial_evolution": "Export financial evolution",
+    "export_financial_chart": "Export financial evolution chart",
+    "export_expenses_by_category": "Export expenses by category",
+    "menu_export_babylon_savings": "Export Babylonian savings",
 
 
 }

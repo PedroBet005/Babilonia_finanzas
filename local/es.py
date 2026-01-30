@@ -78,6 +78,35 @@ MESSAGES = {
     "percentage": "Porcentaje",
     "amount": "Monto",
     "others": "Otros",
+    "amount": "Monto",
+
+
+
+    # Confirmaciones
+    "income_saved": "✅ Ingreso registrado con éxito",
+    "expense_saved": "✅ Gasto registrado correctamente",
+    "export_success": "📄 Reporte generado y guardado correctamente",
+
+    # Estados informativos
+    "no_data": "ℹ️ Aún no hay movimientos registrados para este período",
+    "feature_coming_soon": "🚧 Función en desarrollo. Muy pronto estará disponible",
+
+    # Menús
+    "select_option": "Selecciona una opción del menú",
+    "back": "Volver al menú anterior",
+
+    # Errores suaves (UX friendly)
+    "invalid_option": "❌ Opción no válida. Intenta nuevamente",
+
+    # Encabezados
+    "financial_tools": "Herramientas financieras",
+    "financial_evolution": "Evolución financiera",
+
+    # Herramientas financieras – Exportaciones
+    "export_financial_evolution": "Exportar evolución financiera",
+    "export_financial_chart": "Exportar gráfica de evolución financiera",
+    "export_expenses_by_category": "Exportar gastos por categoría",
+    "menu_export_babylon_savings": "Exportar ahorro babilónico",
 
 
 }

@@ -2,6 +2,10 @@ from datetime import datetime
 from core.logic import load_data
 from local.lang import t
 import os
+import matplotlib
+matplotlib.use("Agg")  # 👈 CLAVE para .exe
+import matplotlib.pyplot as plt
+
 
 
 def export_financial_evolution_txt():
@@ -324,3 +328,73 @@ def export_babylon_savings_txt():
     except Exception as e:
         print("❌", t("export_error"))
         print(e)
+
+
+
+def export_financial_evolution_chart():
+    data = load_data()
+
+    movements = {}
+
+    def parse_date(item):
+        raw = item.get("fecha") or item.get("date")
+        if not raw:
+            return None
+        try:
+            return datetime.fromisoformat(raw)
+        except Exception:
+            return None
+
+    # --- Ingresos ---
+    for item in data.get("incomes", []):
+        date = parse_date(item)
+        if not date:
+            continue
+
+        key = f"{date.year}-{date.month:02d}"
+        movements.setdefault(key, {"income": 0, "expense": 0, "saving": 0})
+        movements[key]["income"] += float(item.get("amount", 0))
+
+    # --- Gastos ---
+    for item in data.get("expenses", []):
+        date = parse_date(item)
+        if not date:
+            continue
+
+        key = f"{date.year}-{date.month:02d}"
+        movements.setdefault(key, {"income": 0, "expense": 0, "saving": 0})
+        movements[key]["expense"] += float(item.get("amount", 0))
+
+    if not movements:
+        print("ℹ️", t("no_data"))
+        return
+
+    # --- Ahorro babilónico ---
+    for values in movements.values():
+        values["saving"] = values["income"] * 0.10
+
+    # 📂 Carpeta reportes
+    os.makedirs("reportes", exist_ok=True)
+
+    periods = sorted(movements.keys())
+    incomes = [movements[p]["income"] for p in periods]
+    expenses = [movements[p]["expense"] for p in periods]
+    savings = [movements[p]["saving"] for p in periods]
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(periods, incomes, marker="o", label="Ingresos")
+    plt.plot(periods, expenses, marker="o", label="Gastos")
+    plt.plot(periods, savings, marker="o", label="Ahorro (10%)")
+
+    plt.title("Evolución financiera - Finanzas de Babilonia")
+    plt.xlabel("Período")
+    plt.ylabel("Monto")
+    plt.legend()
+    plt.grid(True)
+
+    filename = "reportes/evolucion_financiera.png"
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+
+    print(f"📊 Gráfico financiero exportado: {filename}")
