@@ -1,10 +1,12 @@
 from datetime import datetime
-from core.logic import load_data
-from local.lang import t
 import os
+
 import matplotlib
 matplotlib.use("Agg")  # 👈 CLAVE para .exe
 import matplotlib.pyplot as plt
+
+from app.services.core.logic import load_data
+from app.services.local.lang import t
 
 
 
@@ -50,33 +52,27 @@ def export_financial_evolution_txt():
         values["saving"] = values["income"] * 0.10
 
     # --- Carpeta reportes ---
-    folder = "reportes"
+    folder = "reports"
     os.makedirs(folder, exist_ok=True)
 
     periods = sorted(movements.keys())
-    filename = f"evolucion_financiera_{periods[0]}.txt"
+    filename = f"financial_evolution_{periods[0]}.txt"
     filepath = os.path.join(folder, filename)
-
-    month_names = {
-        1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril",
-        5: "Mayo", 6: "Junio", 7: "Julio", 8: "Agosto",
-        9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
-    }
 
     try:
         with open(filepath, "w", encoding="utf-8") as f:
-            f.write("🏛️ FINANZAS DE BABILONIA\n")
-            f.write("📈 Evolución financiera del oro\n")
+            f.write(t("finance_title") + "\n")
+            f.write(t("financial_evolution_title") + "\n")
             f.write("=" * 50 + "\n\n")
 
             if len(periods) > 1:
-                f.write("🧠 Aviso: El reporte contiene múltiples meses\n\n")
+                f.write(t("multi_month_warning") + "\n\n")
 
             total_income = total_expense = total_saving = total_balance = 0.0
 
             for period in periods:
                 year, month = period.split("-")
-                month_label = f"{month_names[int(month)]} {year}"
+                month_label = f"{t('month_names')[int(month)]} {year}"
 
                 income = movements[period]["income"]
                 expense = movements[period]["expense"]
@@ -96,7 +92,7 @@ def export_financial_evolution_txt():
                 f.write("-" * 50 + "\n")
 
             # --- TOTAL GENERAL ---
-            f.write("\n📌 TOTAL GENERAL\n")
+            f.write("\n📌 " + t("grand_total") + "\n")
             f.write(f"💰 {t('income')}: {total_income:.2f}\n")
             f.write(f"📉 {t('expense')}: {total_expense:.2f}\n")
             f.write(f"🏺 {t('savings')}: {total_saving:.2f}\n")
@@ -154,44 +150,40 @@ def export_expenses_by_category_txt():
         return
 
     # --- Preparar carpeta ---
-    reports_dir = "reportes"
+    reports_dir = "reports"
     os.makedirs(reports_dir, exist_ok=True)
 
     # --- Nombre del mes ---
-    month_names = [
-        "", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ]
 
     if len(months) == 1:
         year, month = list(months)[0].split("-")
-        month_label = f"{month_names[int(month)]} {year}"
-        filename = f"gastos_por_categoria_{year}-{month}.txt"
+        month_label = f"{t('month_names')[int(month)]} {year}"
+        filename = f"expenses_by_category_{year}-{month}.txt"
     else:
-        month_label = "Varios períodos"
-        filename = "gastos_por_categoria_varios_periodos.txt"
-
-    filepath = os.path.join(reports_dir, filename)
+        month_label = t("multiple_periods")
+        filename = "expenses_by_category_multiple_periods.txt"
+        
+        filepath = os.path.join(reports_dir, filename)
 
     # --- Exportar ---
     try:
         with open(filepath, "w", encoding="utf-8") as f:
-            f.write("🏛️ FINANZAS DE BABILONIA\n")
-            f.write("📂 GASTOS POR CATEGORÍA\n")
-            f.write(f"📅 Período: {month_label}\n")
+            f.write(t("finance_title") + "\n")
+            f.write(t("expenses_by_category") + "\n")
+            f.write(f"📅 {t('period')}: {month_label}\n")
             f.write("=" * 50 + "\n\n")
 
-            total_general = sum(categories.values())
+            grand_total = sum(categories.values())
 
             for cat, amount in sorted(categories.items(), key=lambda x: x[1], reverse=True):
-                percent = (amount / total_general) * 100 if total_general else 0
+                percent = (amount / grand_total) * 100 if grand_total else 0
                 f.write(f"{cat:<25} {amount:>10.2f}  ({percent:>5.1f}%)\n")
 
             f.write("\n" + "-" * 50 + "\n")
-            f.write(f"{t('total')}: {total_general:.2f}\n")
+            f.write(f"{t('total')}: {grand_total:.2f}\n")
 
             if len(months) > 1:
-                f.write("\n⚠️ Aviso: Este reporte incluye más de un mes.\n")
+                f.write("\n⚠️ " + t("multi_month_warning") + "\n")
 
         print(f"✅ {t('export_success')}: {filepath}")
 
@@ -278,50 +270,46 @@ def export_babylon_savings_txt():
         return
 
     # --- Preparar carpeta ---
-    reports_dir = "reportes"
+    reports_dir = "reports"
     os.makedirs(reports_dir, exist_ok=True)
 
     # --- Nombre del mes ---
-    month_names = [
-        "", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ]
 
     if len(months) == 1:
         year, month = list(months)[0].split("-")
-        month_label = f"{month_names[int(month)]} {year}"
-        filename = f"ahorro_babilonico_{year}-{month}.txt"
+        month_label = f"{t('month_names')[int(month)]} {year}"
+        filename = f"babylonian_savings_{year}-{month}.txt"
     else:
-        month_label = "Varios períodos"
-        filename = "ahorro_babilonico_varios_periodos.txt"
+        month_label = t("multiple_periods")
+        filename = "babylonian_savings_multiple_periods.txt"
 
-    filepath = os.path.join(reports_dir, filename)
+        filepath = os.path.join(reports_dir, filename)
 
     # --- Exportar ---
     try:
         with open(filepath, "w", encoding="utf-8") as f:
-            f.write("🏛️ FINANZAS DE BABILONIA\n")
-            f.write("🏺 AHORRO BABILÓNICO (10%)\n")
-            f.write(f"📅 Período: {month_label}\n")
+            f.write(t("finance_title") + "\n")
+            f.write(t("babylonian_savings") + "\n")
+            f.write(f"📅 {t('period')}: {month_label}\n")
             f.write("=" * 50 + "\n\n")
 
-            total_general = 0.0
+            total_amount = 0.0
 
             for period in sorted(savings.keys()):
                 year, month = period.split("-")
-                month_name = f"{month_names[int(month)]} {year}"
+                month_name = f"{t('month_names')[int(month)]} {year}"
                 amount = savings[period]
-                total_general += amount
+                total_amount += amount
 
                 f.write(f"📅 {month_name}\n")
-                f.write(f"   🏺 Ahorro: {amount:.2f}\n")
+                f.write(f"   🏺 {t('savings')}: {amount:.2f}\n")
                 f.write("-" * 40 + "\n")
 
             f.write("\n" + "=" * 50 + "\n")
-            f.write(f"{t('total')}: {total_general:.2f}\n")
+            f.write(f"{t('total')}: {total_amount:.2f}\n")
 
             if len(months) > 1:
-                f.write("\n⚠️ Aviso: Este reporte incluye más de un mes.\n")
+                f.write("\n⚠️ " + t("multi_month_warning") + "\n")
 
         print(f"✅ {t('export_success')}: {filepath}")
 
@@ -374,7 +362,7 @@ def export_financial_evolution_chart():
         values["saving"] = values["income"] * 0.10
 
     # 📂 Carpeta reportes
-    os.makedirs("reportes", exist_ok=True)
+    os.makedirs("reports", exist_ok=True)
 
     periods = sorted(movements.keys())
     incomes = [movements[p]["income"] for p in periods]
@@ -382,19 +370,18 @@ def export_financial_evolution_chart():
     savings = [movements[p]["saving"] for p in periods]
 
     plt.figure(figsize=(10, 5))
-    plt.plot(periods, incomes, marker="o", label="Ingresos")
-    plt.plot(periods, expenses, marker="o", label="Gastos")
-    plt.plot(periods, savings, marker="o", label="Ahorro (10%)")
+    plt.plot(periods, incomes, marker="o", label=t("income"))
+    plt.plot(periods, expenses, marker="o", label=t("expense"))
+    plt.plot(periods, savings, marker="o", label=t("savings_label"))
 
-    plt.title("Evolución financiera - Finanzas de Babilonia")
-    plt.xlabel("Período")
-    plt.ylabel("Monto")
-    plt.legend()
+    plt.title(t("chart_title"))
+    plt.xlabel(t("period"))
+    plt.ylabel(t("amount"))
     plt.grid(True)
 
-    filename = "reportes/evolucion_financiera.png"
+    filename = "reports/financial_evolution.png"
     plt.tight_layout()
     plt.savefig(filename)
     plt.close()
 
-    print(f"📊 Gráfico financiero exportado: {filename}")
+    print(f"📊 {t('chart_exported')}: {filename}")
