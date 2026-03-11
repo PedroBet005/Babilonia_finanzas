@@ -1,0 +1,10 @@
+finance_title
+financial_evolution_title
+==================================================
+
+📅 Enero 2026
+  💰 Ingresos: 2000.00
+  📉 Gastos: 300.00
+  🏺 Ahorro (regla de Babilonia – 10%): 200.00
+  📊 balance: 1500.00
+--------------------------------------------------
