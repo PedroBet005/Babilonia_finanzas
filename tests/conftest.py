@@ -1,5 +1,5 @@
 import pytest
-from infrastructure.repositories.finance.in_memory_finance_repository import (
+from tests.fakes.in_memory_finance_repository import (
     InMemoryFinanceRepository,
 )
 
