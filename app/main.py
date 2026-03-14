@@ -33,6 +33,13 @@ app = FastAPI(
 )
 
 
+
+from infrastructure.db.session import Base, engine
+
+@app.on_event("startup")
+def startup():
+    Base.metadata.create_all(bind=engine)
+
 # =====================================================
 # RATE LIMIT
 # =====================================================

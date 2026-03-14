@@ -4,6 +4,7 @@ from sqlalchemy import Column, Float, String, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from infrastructure.db.session import Base
+from datetime import datetime
 
 
 class ExpenseModel(Base):
@@ -14,4 +15,4 @@ class ExpenseModel(Base):
     description = Column(String)
     user_id = Column(UUID(as_uuid=True), nullable=False)
     category_id = Column(UUID(as_uuid=True))
-    created_at = Column(DateTime(timezone=True),server_default=func.now(),)
+    created_at = Column(DateTime, default=datetime.utcnow)
